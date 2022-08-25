@@ -1,0 +1,85 @@
+---
+# - name: Update apt-get repo and cache
+#   apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+#   become: yes
+
+- name: check if tarball already there in the machine
+  command: "ls -lart"
+  register: ls_output
+
+- debug: msg="{{ ls_output.stdout.split('\n') }}"
+
+# - name: download the tarball
+#   get_url:
+#     url: "{{ cloudsight_server_install_url }}/{{ cloudsight_version }}/cloudsight-install-{{ cloudsight_version }}.tar.bz2"
+#     dest: /home/{{ ansible_user }}
+#     url_username: "{{ inteno_user }}"
+#     url_password: "{{ inteno_password }}"
+#   when: ls_output.stdout.find('{{ cloudsight_version }}') == -1
+
+# # Untar the tarball file:
+# - name: Untar the tarball files
+#   command: "tar -xvf cloudsight-install-{{ cloudsight_version }}.tar.bz2"
+
+# # Create a new folder:
+# - name: create the directory to install the CS server
+#   file:
+#     path: ~/cloudsight_{{ cloudsight_version }}
+#     state: directory
+
+# # Copy the installtion.properties file to that path: 
+# - name: copy the file to the folder
+#   ansible.builtin.copy:
+#     src: ~/cloudsight-server-install/templates/installation.properties
+#     dest: ~/cloudsight_{{ cloudsight_version }}/installation.properties
+#     remote_src: yes
+
+# # Copy all the files to the folder:
+# - name: Copy the key files 
+#   copy:  
+#     src: "{{ item }}"
+#     dest: ~/cloudsight_{{ cloudsight_version }}/
+#   with_fileglob:
+#     - ../../../../key_files/{{ domain }}/*
+#     - ../../../../key_files/*.truststore
+#     - ../files/*
+#   when: item.find("example.truststore") == -1
+
+# # Change the file permission for python: 
+# - name: Change file ownership of python script
+#   ansible.builtin.file:
+#     path: ~/cloudsight_{{ cloudsight_version }}/auto_populate_file.py
+#     owner: "{{ ansible_user }}"
+#     mode: '0775'
+
+# # Run the script to process the installation.properties:
+# - name: Populate the properties file
+#   script: ../files/auto_populate_file.py {{ domain }} {{ license_component_name }} {{ license_component_secret }} {{ deploy_tr069 }} {{ aws_accessKey_id }} {{ aws_accessKey_secret }} {{ aws_region }} {{ aws_maintainer_email }}
+#   args:
+#     chdir: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}/
+#     executable: python3
+
+# # Run the deployment command: 
+# - name: Execute the deployment
+#   shell: ../cloudsight-server-install/deploy.sh {{ cloudsight_version }}
+#   args: 
+#     chdir: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}/
+#   ignore_errors: yes
+#   become: yes
+#   register: deploy_out
+
+# - debug: msg="{{ deploy_out.stdout.split('\n') }}"
+
+# # copy the log files back to the host and return the result variable
+# - name: Recursively find the log files
+#   find:
+#     paths: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}/
+#     file_type: file
+#     patterns: "*.log"
+#   register: files_to_fetch
+
+# - name: fetch files
+#   fetch:
+#     src: "{{ item.path }}"
+#     dest: ../result/
+#   loop: "{{ files_to_fetch.files }}"

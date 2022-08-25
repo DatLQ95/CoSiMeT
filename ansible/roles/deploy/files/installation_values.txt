@@ -1,0 +1,26 @@
+# Manually added value for keycloak.smtpserver.password during step Install Keycloak
+keycloak.smtpserver.password=test
+# Manually added value for keycloak.smtpserver.user during step Install Keycloak
+keycloak.smtpserver.user=test
+# Manually added value for keycloak.smtpserver.starttls during step Install Keycloak
+keycloak.smtpserver.starttls=true
+# Manually added value for keycloak.smtpserver.auth during step Install Keycloak
+keycloak.smtpserver.auth=true
+# Manually added value for keycloak.smtpserver.host during step Install Keycloak
+keycloak.smtpserver.host=test
+# Manually added value for keycloak.smtpserver.port during step Install Keycloak
+keycloak.smtpserver.port=25
+# Manually added value for keycloak.smtpserver.from during step Install Keycloak
+keycloak.smtpserver.from=test
+# Manually added value for keycloak.smtpserver.ssl during step Install Keycloak
+keycloak.smtpserver.ssl=true
+# Manually added value for mail.smtp.host during step Deploying Iopsys Server
+mail.smtp.host=test
+# Manually added value for mail.smtp.port during step Deploying Iopsys Server
+mail.smtp.port=25
+# Manually added value for mail.smtp.password during step Deploying Iopsys Server
+mail.smtp.password=test
+# Manually added value for mail.smtp.username during step Deploying Iopsys Server
+mail.smtp.username=test
+# Manually added value for mail.smtp.ssl during step Deploying Iopsys Server
+mail.smtp.ssl=true

@@ -1,0 +1,16 @@
+---
+- name: Automate CS deployment and upgrade
+  hosts: all
+
+  roles:
+    - role: upgrade
+      tags: upgrade
+    - role: deploy
+      tags: deploy
+    - role: connection_check
+      tags: connection_check
+    - role: renewal_certificate
+      tags: renewal_certificate
+    - role: sanity_check
+      tags: sanity_check
+    

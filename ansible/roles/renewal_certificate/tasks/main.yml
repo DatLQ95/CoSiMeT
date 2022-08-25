@@ -1,0 +1,61 @@
+---
+# Check if 
+# Stop the server, by running upgrade.sh
+# Copy the new certificates
+# Run deploy.sh again!
+
+- name: Generate random hexadecimal string
+  debug:
+    var: query('community.general.random_string', upper=false, lower=false, override_special=hex_chars, numbers=false)
+  vars:
+    hex_chars: '0123456789ABCDEF'
+
+# Create a new folder:
+- name: create the directory to install the CS server
+  file:
+    path: ~/cloudsight_{{ cloudsight_version }}_{{ hex_chars }}
+    state: directory
+
+# Run upgrade.sh script
+- name: Run upgrade.sh script
+  shell: ../cloudsight-server-install/upgrade.sh
+  args: 
+    chdir: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}_{{ hex_chars }}/
+  ignore_errors: yes
+  become: yes
+
+# Replace the old http.keystore with a new one
+- name: Delete content & directory
+  file:
+    state: absent
+    path: ~/cloudsight_{{ cloudsight_version }}_{{ hex_chars }}/http.keystore
+
+- name: Copy the key files 
+  copy:  
+    src: ../../../../key_files/{{ domain }}/http.keystore
+    dest: ~/cloudsight_{{ cloudsight_version }}_{{ hex_chars }}/
+
+# Run the deployment command: 
+- name: Execute the deployment
+  shell: ../cloudsight-server-install/deploy.sh {{ cloudsight_version }}
+  args: 
+    chdir: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}_{{ hex_chars }}/
+  ignore_errors: yes
+  become: yes
+  register: deploy_out
+
+- debug: msg="{{ deploy_out.stdout.split('\n') }}"
+
+# copy the log files back to the host and return the result variable
+- name: Recursively find the log files
+  find:
+    paths: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}_{{ hex_chars }}/
+    file_type: file
+    patterns: "*.log"
+  register: files_to_fetch
+
+- name: fetch files
+  fetch:
+    src: "{{ item.path }}"
+    dest: ../result/
+  loop: "{{ files_to_fetch.files }}"

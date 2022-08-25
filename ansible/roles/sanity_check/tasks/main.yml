@@ -1,0 +1,129 @@
+---
+# Install the updates and docker
+
+# Try telnet to license server 
+- name: Connect to license server
+  command: "timeout 1 telnet {{ license_server_address }} {{ license_server_port }}"
+  register: telnet_result
+  ignore_errors: yes
+  
+- debug: msg="{{ telnet_result.stdout.split('\n') }}"
+
+# If the result is not corr
+# Try telnet to license server IP address
+- name: Connect to license server
+  command: "timeout 1 telnet {{ license_server_IP_addr }} {{ license_server_port }}"
+  register: telnet_result
+  ignore_errors: yes
+
+- debug: msg="{{ telnet_result.stdout.split('\n') }}"
+
+# Get the iptables: 
+- name: Get the iptables data
+  command: "iptables -L -v -n"
+  become: yes
+  ignore_errors: yes
+  register: iptables_output
+
+- debug: msg="{{ iptables_output.stdout.split('\n') }}"
+  ignore_errors: yes
+
+# Get the port status: 
+# Port 80: 
+- name: Get the port 80 data
+  shell: netstat -tulpn | grep -w 80
+  register: port80_output
+  ignore_errors: yes
+
+- debug: msg="{{ port80_output.stdout.split('\n') }}"
+
+# Port 443:
+- name: Get the port 443 data
+  shell: netstat -tulpn | grep -w 443
+  register: port443_output
+  ignore_errors: yes
+
+- debug: msg="{{ port443_output.stdout.split('\n') }}"
+
+# Port 5201:
+- name: Get the port 5201 data
+  shell: netstat -tulpn | grep -w 5201
+  register: port5201_output
+  ignore_errors: yes
+
+- debug: msg="{{ port5201_output.stdout.split('\n') }}"
+
+# Port 5223:
+- name: Get the port 5223 data
+  shell: netstat -tulpn | grep -w 5223
+  register: port5223_output
+  ignore_errors: yes
+
+- debug: msg="{{ port5223_output.stdout.split('\n') }}"
+
+# Port 7443:
+- name: Get the port 7443 data
+  shell: netstat -tulpn | grep -w 7443
+  register: port7443_output
+  ignore_errors: yes
+
+- debug: msg="{{ port7443_output.stdout.split('\n') }}"
+
+# Port 9090:
+- name: Get the port 9090 data
+  shell: netstat -tulpn | grep -w 9090
+  register: port9090_output
+  ignore_errors: yes
+
+- debug: msg="{{ port9090_output.stdout.split('\n') }}"
+
+# Port 9091:
+- name: Get the port 9091 data
+  shell: netstat -tulpn | grep -w 9091
+  register: port9091_output
+  ignore_errors: yes
+
+- debug: msg="{{ port9091_output.stdout.split('\n') }}"
+
+# Port 9291:
+- name: Get the port 9291 data
+  shell: netstat -tulpn | grep -w 9291
+  register: port9291_output
+  ignore_errors: yes
+
+- debug: msg="{{ port9291_output.stdout.split('\n') }}"
+
+# Ping the server domain:
+- name: Ping the server domain
+  shell: ping -c 3 {{ domain }}
+  register: domain_output
+  ignore_errors: yes
+
+- debug: msg="{{ domain_output.stdout.split('\n') }}"
+
+# Ping the server subdomain:
+- name: Ping the server subdomain
+  shell: ping -c 1 a.{{ domain }}
+  register: subdomain_output
+  ignore_errors: yes
+
+- debug: msg="{{ subdomain_output.stdout.split('\n') }}"
+
+# Check if the INPUT chain already has the rule: 
+- name: Get the INPUT chain from iptables
+  shell: iptables -L INPUT -v -n
+  become: yes
+  register: iptables_INPUT_out
+  ignore_errors: yes
+
+# - name: Add the rule if the rule is not applied
+#   shell: iptables -A INPUT -i docker0 -j ACCEPT
+#   become: yes
+#   when: iptables_INPUT_out.stdout.find('docker0') == -1
+
+# - name: Get the INPUT chain from iptables
+#   shell: iptables -L INPUT -v -n
+#   become: yes
+#   register: new_iptables_INPUT_out
+
+# - debug: msg="{{ new_iptables_INPUT_out.stdout.split('\n') }}"

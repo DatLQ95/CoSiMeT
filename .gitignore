@@ -1,0 +1,10 @@
+result/
+src/config.py
+src/tmp
+ansible/hosts.yaml
+credentials/
+credentials-test/
+ansible_docs/
+src/AnsibleHelper.py
+src/AnsibleTasks.py
+.DS_Store
