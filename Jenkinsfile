@@ -7,6 +7,7 @@ pipeline {
                 echo 'build'
                 sh 'whoami'
                 sh 'ls -lart'
+                sh 'uname -a'
             }
         }
 
