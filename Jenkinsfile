@@ -2,7 +2,7 @@ pipeline {
     agent any
     stages {
 
-        state("build") {
+        stage("build") {
             steps{
                 echo 'build'
                 sh 'whoami'
@@ -10,13 +10,13 @@ pipeline {
             }
         }
 
-        state("test") {
+        stage("test") {
             steps{
                 echo 'test'
             }
         }
 
-        state("deploy") {
+        stage("deploy") {
             steps{
                 echo 'deploy'
             }
