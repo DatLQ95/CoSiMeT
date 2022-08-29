@@ -4,21 +4,21 @@ pipeline {
 
         state("build") {
             steps{
-                echo "build"
-                sh "whoami"
-                sh "ls -lart"
+                echo 'build'
+                sh 'whoami'
+                sh 'ls -lart'
             }
         }
 
         state("test") {
             steps{
-                echo "build"
+                echo 'test'
             }
         }
 
         state("deploy") {
             steps{
-                echo "build"
+                echo 'deploy'
             }
         }
     }
