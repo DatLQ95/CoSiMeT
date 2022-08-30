@@ -9,7 +9,7 @@ class Program:
         self._state = None
         self.GUIhelper = GUIHelper()
         self.processor = CSProcessor()
-        self.setProgramState(OpenMenu())
+        self.setProgramState(LoginState())
 
     def setProgramState(self, state: State):
         self._state = state

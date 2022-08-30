@@ -1,18 +1,43 @@
 from CloudSightServer import CloudSightServer
 import mysql.connector
+import mysql
+from mysql.connector.locales.eng import client_error
+from mysql.connector.plugins import *
 
 class DatabaseAgent:
-    def __init__(self, host, user, password, database, table_name):
+    def __init__(self):
         #FIXME: we have not deal with the case that we dont habe database in the first place, let's assume we already have the database named: CloudSightServers
-        self.mydb = mysql.connector.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=database,
-        )
-        self.table_name = table_name
-        self.create_table(self.table_name)
-        
+        self.mydb = None
+        # try:
+        #     self.mydb = mysql.connector.connect(
+        #         host=host,
+        #         user=user,
+        #         password=password,
+        #         database=database, 
+        #         # auth_plugin='mysql_native_password',
+        #     )
+        #     self.table_name = table_name
+        #     self.create_table(self.table_name)
+        # except:
+        #     print("An exception occurred")
+        pass
+
+    def check_connection(self, host, user, password, database, table_name):
+        try:
+            self.mydb = mysql.connector.connect(
+                host=host,
+                user=user,
+                password=password,
+                database=database, 
+                # auth_plugin='mysql_native_password',
+            )
+            self.table_name = table_name
+            self.create_table(self.table_name)
+            return True
+        except:
+            print("An exception occurred")
+            return False
+
     def get_all_CS_servers(self):
         mycursor = self.mydb.cursor()
         sql = f"SELECT * FROM {self.table_name}"

@@ -23,6 +23,7 @@ class OpenMenu(State):
         self.program.processor.exit_program()
     
     def execute(self):
+        self.program.processor.update_cs_pool()
         self.show_banner()
         self.show_all_servers()
         self.show_options()
@@ -298,3 +299,20 @@ class UpdateServerStatus(State):
 
     def update_server_status(self):
         self.program.processor.update_server_status(self.cs_server)
+
+class LoginState(State):
+    def __init__(self):
+        super().__init__()
+
+    def go_to_open_menu(self):
+        self.program.setProgramState(OpenMenu())
+
+    def execute(self):
+        self.show_banner()
+        user_name= input("User name: ")
+        user_password = input("Password: ")
+        if self.program.processor.check_user(user_name, user_password):
+            self.go_to_open_menu()    
+        
+    def show_banner(self):
+        self.program.GUIhelper.show_banner()

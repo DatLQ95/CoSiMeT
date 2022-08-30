@@ -8,3 +8,6 @@ ansible_docs/
 src/AnsibleHelper.py
 src/AnsibleTasks.py
 .DS_Store
+build/
+ansible/roles/test
+ansible/test_site.yml

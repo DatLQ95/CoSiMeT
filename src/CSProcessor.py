@@ -8,11 +8,14 @@ import ssl
 class CSProcessor():
     def __init__(self):
         self.cspool = CloudSightPool()
-        self.dbAgent = DatabaseAgent(host=config.database['host'], \
-            user=config.database['user'], password=config.database['password'], \
-            database=config.database['database'], table_name=config.database['table'])
+        self.dbAgent = None
+        # self.dbAgent = DatabaseAgent(host=config.database['host'], \
+        #     user=config.database['user'], password=config.database['password'], \
+        #     database=config.database['database'], table_name=config.database['table'])
+        
+
+    def update_cs_pool(self):
         self.cspool.update_CS_list(self.dbAgent.get_all_CS_servers())
-        pass
 
     def get_all_cloudsight_server(self):
         return self.cspool.get_CS_list()
@@ -82,3 +85,14 @@ class CSProcessor():
         self.cspool.upgrade_version(version, self.get_cloudsight_server(cs_server_name=cs_server_name))
         self.dbAgent.update_CS_server(self.get_cloudsight_server(cs_server_name=cs_server_name))
         pass
+
+    def check_user(self, user_name, user_password):
+        '''
+        Connect to MySQL to check if this user is in database user list
+        '''
+        self.dbAgent = DatabaseAgent()
+        return self.dbAgent.check_connection(host=config.database['host'], \
+            user=user_name, password=user_password, \
+            database=config.database['database'], table_name=config.database['table'])
+        
+        
