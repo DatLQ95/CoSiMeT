@@ -89,9 +89,16 @@ class CloudSightServer:
                 print(self._key)
     
     def create_key_file_path(self):
+        path = os.getcwd() + "/tmp/"
         # Form: name_key
+        isExist = os.path.exists(path)
+
+        if not isExist:
+            # Create a new directory because it does not exist
+            os.makedirs(path)
+
         if self._key:
-            self.key_file_path = os.getcwd() + "/tmp/" + self.get_name() + "key"
+            self.key_file_path = path + self.get_name() + "key"
             with open(self.key_file_path, 'wb') as file:
                 file.write(self._key)
             os.chmod(self.key_file_path, stat.S_IRUSR | stat.S_IWUSR)

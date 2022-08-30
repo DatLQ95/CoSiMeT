@@ -5,7 +5,7 @@ def main():
     program = Program()
     while (True):
         pass
-        # program.run()
+        program.run()
     # print("hello")
 
 if __name__ == "__main__":

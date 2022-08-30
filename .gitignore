@@ -11,3 +11,5 @@ src/AnsibleTasks.py
 build/
 ansible/roles/test
 ansible/test_site.yml
+venv/
+__pycache__
