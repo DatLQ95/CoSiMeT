@@ -2,6 +2,7 @@ from xmlrpc.client import Server
 from StateMachine.StateMachine import State
 from CloudSightServer import CloudSightServer
 import os
+import config
 
 class OpenMenu(State):
     def __init__(self):
@@ -275,9 +276,8 @@ class UpgradeServerVersion(State):
     def execute(self):
         version = input("Version: ")
         #TODO: Check the correct target verion here!!! 
-        # if self.program.processor.check_version(version, self.cs_server):
-            
-        self.upgrade_server_version(version)
+        if self.program.processor.check_version(version, self.cs_server):    
+            self.upgrade_server_version(version)
         self.go_to_server_menu()
 
     def upgrade_server_version(self, version):
@@ -309,8 +309,11 @@ class LoginState(State):
 
     def execute(self):
         self.show_banner()
-        user_name= input("User name: ")
-        user_password = input("Password: ")
+        # user_name= input("User name: ")
+        # user_password = input("Password: ")
+        # FIXME: 
+        user_name = config.database['user']
+        user_password = config.database['password']
         if self.program.processor.check_user(user_name, user_password):
             self.go_to_open_menu()    
         

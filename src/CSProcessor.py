@@ -74,9 +74,20 @@ class CSProcessor():
         
         4.x -> 5.x -> 6.0.x -> 6.1.x -> 6.2.x
         '''
-        # Check format if it is in "x.x.x" or "xxx":
-        #TODO: 
-        pass
+        if len(version) == 5:
+            if version[0].isnumeric() and version[2].isnumeric() and version[4].isnumeric():
+                cs_server = self.cspool.get_cloudsight_server(cs_server_name=cs_server_name)
+                cs_server_current_version = cs_server.get_version()
+                if int(cs_server_current_version[0]) + 1 == int(version[0]):
+                    if int(version[2]) == 0:
+                        return True
+                elif int(cs_server_current_version[0]) == int(version[0]):
+                    if int(cs_server_current_version[2]) + 1 == int(version[2]):
+                        return True
+                    elif int(cs_server_current_version[2]) == int(version[2]):
+                        if int(cs_server_current_version[4]) < int(version[4]):
+                            return True
+        return False
 
     def upgrade_server_version(self, version, cs_server_name):
         '''
