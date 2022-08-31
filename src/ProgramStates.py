@@ -28,7 +28,7 @@ class OpenMenu(State):
         self.show_banner()
         self.show_all_servers()
         self.show_options()
-        action = input("Your input: ")
+        action = input("Your input (Please fill in the number, ex.: 1): ")
         if (action == "1"):
             self.go_to_menu()
         elif (action == "2"):
@@ -57,21 +57,24 @@ class SelectServers(State):
     def __init__(self):
         super().__init__()
 
-    # if down button is pushed it should move one floor down and open the door
     def go_to_open_menu(self):
         self.program.setProgramState(OpenMenu())
 
     def go_to_server_state(self, action):
-        self.program.processor.update_server_status(action)
-        self.program.setProgramState(ServerMenu(action))
+        success = self.program.processor.update_server_status(action)
+        if success:
+            self.program.setProgramState(ServerMenu(action))
+        else :
+            self.program.setProgramState(ServerMenuFail(action))
 
     def execute(self):
         self.show_banner()
         self.show_server_list()
-        action = input("Server's name: ")
+        action = input("Server's name (Please write the name of the server you want to select, ex: demo): ")
         if self.program.processor.check_in_cs_server_list(action):
             self.go_to_server_state(action)
         else: 
+            self.program.GUIhelper.select_server_fault_notice()
             self.go_to_open_menu()
 
     def show_server_list(self):
@@ -85,7 +88,6 @@ class AddServer(State):
     def __init__(self):
         super().__init__()
 
-    # if down button is pushed it should move one floor down and open the door
     def go_to_open_menu(self):
         self.program.setProgramState(OpenMenu())
 
@@ -116,13 +118,13 @@ class RemoveServer(State):
     def __init__(self):
         super().__init__()
 
-    # if down button is pushed it should move one floor down and open the door
     def go_to_open_menu(self):
         self.program.setProgramState(OpenMenu())
 
     def execute(self):
         self.show_banner()
-        server_name= input("Server name: ")
+        self.show_all_servers()
+        server_name= input("Server name (Please write the name of server you want to remove, ex: demo): ")
         if self.program.processor.check_in_cs_server_list(server_name):
             self.program.processor.remove_server(server_name)
         else:
@@ -134,12 +136,14 @@ class RemoveServer(State):
 
     def show_banner(self):
         self.program.GUIhelper.show_banner()
+    
+    def show_all_servers(self):
+        self.program.GUIhelper.list_servers(self.program.processor.get_all_cloudsight_server())
 
 class UpdateServers(State):
     def __init__(self):
         super().__init__()
 
-    # if down button is pushed it should move one floor down and open the door
     def go_to_open_menu(self):
         self.program.setProgramState(OpenMenu())
 
@@ -179,11 +183,10 @@ class ServerMenu(State):
         self.program.setProgramState(UpdateServerStatus(self.cs_server))
 
     def execute(self):
-        
         self.show_banner()
         self.show_server()
         self.show_options()
-        action = input("Your input: ")
+        action = input("Your input (Please fill in the number, ex.: 1): ")
         if (action == "1"):
             self.go_to_open_menu()
         elif (action == "2"):
@@ -204,6 +207,51 @@ class ServerMenu(State):
 
     def show_options(self):
         self.program.GUIhelper.show_options_server_menu()
+    
+    def show_banner(self):
+        self.program.GUIhelper.show_banner()
+
+class ServerMenuFail(State):
+    
+    def __init__(self, cs_server):
+        super().__init__()
+        self.cs_server = cs_server
+    
+    def go_to_open_menu(self):
+        self.program.setProgramState(OpenMenu())
+    
+    def go_to_sanity_check(self):
+        self.program.setProgramState(SanityCheck(self.cs_server))
+    
+    def go_to_connect_server(self):
+        self.program.setProgramState(ServerConnectSSH(self.cs_server))
+    
+    def go_to_update_certificate(self):
+        self.program.setProgramState(UpdateCertificate(self.cs_server))
+    
+    def go_to_upgrade_server(self):
+        self.program.setProgramState(UpgradeServerVersion(self.cs_server))
+
+    def go_to_update_server(self):
+        self.program.setProgramState(UpdateServerStatus(self.cs_server))
+
+    def execute(self):
+        self.show_banner()
+        self.show_server()
+        self.show_options()
+        action = input("Your input (Please fill in the number, ex.: 1): ")
+        if (action == "1"):
+            self.go_to_open_menu()
+        elif (action == "2"):
+            self.go_to_update_server()
+        else:
+            pass
+
+    def show_server(self):
+        self.program.GUIhelper.show_server(self.program.processor.get_cloudsight_server(self.cs_server))
+
+    def show_options(self):
+        self.program.GUIhelper.show_options_server_menu_fail()
     
     def show_banner(self):
         self.program.GUIhelper.show_banner()
@@ -274,10 +322,12 @@ class UpgradeServerVersion(State):
         self.program.setProgramState(ServerMenu(self.cs_server))
 
     def execute(self):
-        version = input("Version: ")
+        version = input("Version (Fill in the version you want to update in format x.x.x, ex: 6.2.5): ")
         #TODO: Check the correct target verion here!!! 
         if self.program.processor.check_version(version, self.cs_server):    
             self.upgrade_server_version(version)
+        else:
+            self.program.GUIhelper.upgrade_server_version_fault_notice()
         self.go_to_server_menu()
 
     def upgrade_server_version(self, version):
@@ -290,15 +340,15 @@ class UpdateServerStatus(State):
         super().__init__()
         self.cs_server = cs_server
 
-    def go_to_server_menu(self):
-        self.program.setProgramState(ServerMenu(self.cs_server))
-
     def execute(self):
         self.update_server_status()
-        self.go_to_server_menu()
 
     def update_server_status(self):
-        self.program.processor.update_server_status(self.cs_server)
+        success = self.program.processor.update_server_status(self.cs_server)
+        if success:
+            self.program.setProgramState(ServerMenu(self.cs_server))
+        else :
+            self.program.setProgramState(ServerMenuFail(self.cs_server))
 
 class LoginState(State):
     def __init__(self):

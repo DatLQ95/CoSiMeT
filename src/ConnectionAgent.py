@@ -142,6 +142,15 @@ class ConnectionAgent:
 
             print(cs_server_lists)
 
+    def remove_key_files(self):
+        tmp_path = path = os.getcwd() + "/tmp/"
+        for file_name in os.listdir(tmp_path):
+            # construct full file path
+            file = path + file_name
+            if os.path.isfile(file):
+                print('Deleting file:', file)
+                os.remove(file)
+
     def run_ansible(self, role):
         output_text = str()
         with subprocess.Popen(['ansible-playbook', '-i', config.ansible_data['inventory_file_path'], config.ansible_data['main_file_path'], '--tags', role], stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
@@ -149,6 +158,7 @@ class ConnectionAgent:
                 print(line, end='') # process line here
                 output_text += line
             # raise ProcessException(command, exitCode, output)
+        self.remove_key_files()
         print("output is ", output_text)
         return output_text
         

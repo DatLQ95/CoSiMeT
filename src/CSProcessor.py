@@ -4,7 +4,7 @@ import config
 import sys
 import socket
 import ssl
-
+import os
 class CSProcessor():
     def __init__(self):
         self.cspool = CloudSightPool()
@@ -66,6 +66,10 @@ class CSProcessor():
     def update_server_status(self, cs_server_name):
         self.cspool.check_status(self.get_cloudsight_server(cs_server_name=cs_server_name))
         self.dbAgent.update_CS_server(self.get_cloudsight_server(cs_server_name=cs_server_name))
+        if self.get_cloudsight_server(cs_server_name=cs_server_name).get_status() == config.status_state['available']:
+            return True
+        else :
+            return False
         
     def check_version(self, version, cs_server_name):
         '''
@@ -106,4 +110,6 @@ class CSProcessor():
             user=user_name, password=user_password, \
             database=config.database['database'], table_name=config.database['table'])
         
+    
+
         

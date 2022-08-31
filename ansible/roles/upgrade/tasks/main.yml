@@ -38,6 +38,8 @@
     chdir: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}/
   ignore_errors: yes
   become: yes
+  async: 1800
+  poll: 300
 
 # Run the deployment command: 
 - name: Execute the deployment
@@ -47,6 +49,8 @@
   ignore_errors: yes
   become: yes
   register: deploy_out
+  async: 3600
+  poll: 300
 
 - debug: msg="{{ deploy_out.stdout.split('\n') }}"
 

@@ -25,3 +25,6 @@ if __name__ == "__main__":
 # Set up Jenkins job to send the code to target machine
 # Set up Countinuos Deployment to deploy to our internal machine.
 # Write the doc how to use the program.
+
+# TODO:
+# Write a more brief report, summarize info in better way, how better -> ask Glicci!.
