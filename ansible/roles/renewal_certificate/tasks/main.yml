@@ -4,52 +4,62 @@
 # Copy the new certificates
 # Run deploy.sh again!
 
-- name: Generate random hexadecimal string
-  debug:
-    var: query('community.general.random_string', upper=false, lower=false, override_special=hex_chars, numbers=false)
-  vars:
-    hex_chars: '0123456789ABCDEF'
-
 # Create a new folder:
 - name: create the directory to install the CS server
   file:
-    path: ~/cloudsight_{{ cloudsight_version }}_{{ hex_chars }}
+    path: ~/cloudsight_{{ cloudsight_version }}_{{ time_str }}
     state: directory
 
 # Run upgrade.sh script
 - name: Run upgrade.sh script
   shell: ../cloudsight-server-install/upgrade.sh
   args: 
-    chdir: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}_{{ hex_chars }}/
+    chdir: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}_{{ time_str }}/
   ignore_errors: yes
   become: yes
+  async: 1800
+  poll: 60
 
 # Replace the old http.keystore with a new one
-- name: Delete content & directory
+- name: Delete the http.keystore
   file:
     state: absent
-    path: ~/cloudsight_{{ cloudsight_version }}_{{ hex_chars }}/http.keystore
+    path: ~/cloudsight_{{ cloudsight_version }}_{{ time_str }}/http.keystore
+
+# Replace the old http.keystore with a new one
+- name: Delete the https.pem
+  file:
+    state: absent
+    path: ~/cloudsight_{{ cloudsight_version }}_{{ time_str }}/https.pem
+
+# Replace the old http.keystore with a new one
+- name: Delete the https.crt
+  file:
+    state: absent
+    path: ~/cloudsight_{{ cloudsight_version }}_{{ time_str }}/https.crt
 
 - name: Copy the key files 
   copy:  
-    src: ../../../../key_files/{{ domain }}/http.keystore
-    dest: ~/cloudsight_{{ cloudsight_version }}_{{ hex_chars }}/
+    src: ../../../../src/{{ key_file_path }}
+    dest: ~/cloudsight_{{ cloudsight_version }}_{{ time_str }}/
 
 # Run the deployment command: 
 - name: Execute the deployment
   shell: ../cloudsight-server-install/deploy.sh {{ cloudsight_version }}
   args: 
-    chdir: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}_{{ hex_chars }}/
+    chdir: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}_{{ time_str }}/
   ignore_errors: yes
   become: yes
   register: deploy_out
+  async: 3600
+  poll: 60
 
 - debug: msg="{{ deploy_out.stdout.split('\n') }}"
 
 # copy the log files back to the host and return the result variable
 - name: Recursively find the log files
   find:
-    paths: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}_{{ hex_chars }}/
+    paths: /home/{{ ansible_user }}/cloudsight_{{ cloudsight_version }}_{{ time_str }}/
     file_type: file
     patterns: "*.log"
   register: files_to_fetch

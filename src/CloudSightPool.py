@@ -73,10 +73,10 @@ class CloudSightPool:
     def check_connect_all_server(self):
         ansibleHelper = ConnectionAgent()
         cs_server_list =  ansibleHelper.do_connection_check(self.get_CS_list())
-        cs_server_list = self.update_certificate(self.get_CS_list())
+        cs_server_list = self.update_certificate_expiry_date(self.get_CS_list())
         self.update_CS_list(cs_server_list)
 
-    def update_certificate(self, cs_server_list):
+    def update_certificate_expiry_date(self, cs_server_list):
         
         for cs_server in cs_server_list:
             print(cs_server.get_url())
@@ -90,6 +90,7 @@ class CloudSightPool:
     def update_server_certificate(self, cs_server):
         try:
             exprity_date = self.ssl_expiry_datetime(cs_server.get_url())
+            print("expiry_date: ", exprity_date)
             cs_server.set_certi_expiry_date(exprity_date)
         except: 
             print("Unreachable")
@@ -119,6 +120,16 @@ class CloudSightPool:
         cs_list = list()
         cs_list.append(cs_server)
         cs_server =  ansibleHelper.do_upgrade_version_server(version, cs_list)[0]
+        cs_server = self.update_server_certificate(cs_server)
+        self.update_CS(cs_server)
+        return cs_server
+    
+    def update_http_certificate(self, cs_server, path):
+        print("in Cs pool")
+        ansibleHelper = ConnectionAgent()
+        cs_list = list()
+        cs_list.append(cs_server)
+        cs_server =  ansibleHelper.do_update_http_certificate(cs_list, path)[0]
         cs_server = self.update_server_certificate(cs_server)
         self.update_CS(cs_server)
         return cs_server

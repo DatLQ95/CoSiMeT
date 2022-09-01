@@ -14,11 +14,7 @@ if __name__ == "__main__":
 # TODO: 
 # Dev job: 
 # Store the key using hash algorithm.
-# Notice State Machine -> give out notice 
-# Async in Ansible
 # deploy feature
-# Renewal Certificate feature
-# Remove the /tmp file after connection
 
 # DevOps: 
 # Set up Jenkins job to test the python code 
@@ -28,3 +24,5 @@ if __name__ == "__main__":
 
 # TODO:
 # Write a more brief report, summarize info in better way, how better -> ask Glicci!.
+
+# Finish certificate renewal, need to test to verify

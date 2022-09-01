@@ -52,8 +52,8 @@ class CSProcessor():
         
         pass
 
-    def update_certificate(self, cs_server_list):
-        self.cspool.update_certificate(cs_server_list)
+    def update_certificate_expiry_date(self, cs_server_list):
+        self.cspool.update_certificate_expiry_date(cs_server_list)
         pass
 
     def connect_ssh(self, cs_server_name):
@@ -111,5 +111,11 @@ class CSProcessor():
             database=config.database['database'], table_name=config.database['table'])
         
     
-
-        
+    def update_http_certificate(self, cs_server_name, path):
+        '''
+        Update the HTTP certificate for cs_server 
+        '''
+        print("Update Certificate in CS PRogram")
+        self.cspool.update_http_certificate(self.get_cloudsight_server(cs_server_name=cs_server_name), path)
+        self.dbAgent.update_CS_server(self.get_cloudsight_server(cs_server_name=cs_server_name))
+        pass

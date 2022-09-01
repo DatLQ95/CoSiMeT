@@ -30,6 +30,10 @@ class GUIHelper:
         print(f"{Fore.CYAN}Server's name is not exist in database, please check again!")
         input("Press anykey to return: ")
 
+    def update_certificate_fail_notice(self):
+        print(f"{Fore.CYAN}The file is not found, please check the path again!")
+        input("Press anykey to return: ")
+
     def check_input_requirements(self):
         pass
 
@@ -46,7 +50,7 @@ class GUIHelper:
     
 
     def show_banner(self):
-        os.system('clear')
+        # os.system('clear')
         print(f"{Fore.CYAN}----------------------------------------------------")
         print(f"{Fore.CYAN}---------CLOUDSIGHT MANAGEMENT TOOL-----------------")
         print(f"{Fore.CYAN}----------------------------------------------------")

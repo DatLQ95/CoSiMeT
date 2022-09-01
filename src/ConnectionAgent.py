@@ -49,6 +49,21 @@ class ConnectionAgent:
             self.sanity_output_processing(avail_hosts, self.run_ansible(role="sanity_check"))
         return cs_server_list
 
+    def do_update_http_certificate(self, cs_server_list, path):
+        '''
+        '''
+        print("Do update HTTP certificate")
+        self.do_connection_check(cs_server_list=cs_server_list)
+        avail_hosts = self.filter_unreachable_hosts(cs_server_list)
+        print(avail_hosts)
+        
+        # if avail_hosts is empty: 
+        if avail_hosts:
+            print("the avail host is not empty")
+            self.prepare_cs_server_list_file_for_certificate_renewal(path, cs_server_list)
+            self.sanity_output_processing(cs_server_list, self.run_ansible(role="renewal_certificate"))
+        return cs_server_list
+
     def filter_unreachable_hosts(self, hostlist):
         avail_list = list()
         for cs_server in hostlist:
@@ -134,6 +149,27 @@ class ConnectionAgent:
         with open(config.ansible_data['inventory_file_path'], 'w') as file:
             yaml.dump(dict_file, file)
 
+    def prepare_cs_server_list_file_for_certificate_renewal(self, path, cs_server_list):
+        dict_file = dict()
+        dict_file['all'] = dict()
+        dict_file['all']['hosts'] = dict()
+        for cs_server in cs_server_list:
+            dict_file['all']['hosts'][cs_server.get_name()] = dict()
+            dict_file['all']['hosts'][cs_server.get_name()]['ansible_host'] = cs_server.get_url()
+            dict_file['all']['hosts'][cs_server.get_name()]['ansible_user'] = cs_server.get_remote_user()
+            if cs_server.get_access_port():
+                dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
+            dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+            dict_file['all']['hosts'][cs_server.get_name()]['cloudsight_version'] = cs_server.get_version()
+            dict_file['all']['hosts'][cs_server.get_name()]['key_file_path'] = path
+            dict_file['all']['hosts'][cs_server.get_name()]['time_str'] = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
+            
+
+        print(dict_file)
+        
+        with open(config.ansible_data['inventory_file_path'], 'w') as file:
+            yaml.dump(dict_file, file)
+
     def read_host_file(self):
         with open(config.ansible_data['inventory_file_path']) as file:
             # The FullLoader parameter handles the conversion from YAML
@@ -142,14 +178,7 @@ class ConnectionAgent:
 
             print(cs_server_lists)
 
-    def remove_key_files(self):
-        tmp_path = path = os.getcwd() + "/tmp/"
-        for file_name in os.listdir(tmp_path):
-            # construct full file path
-            file = path + file_name
-            if os.path.isfile(file):
-                print('Deleting file:', file)
-                os.remove(file)
+    
 
     def run_ansible(self, role):
         output_text = str()
@@ -158,7 +187,6 @@ class ConnectionAgent:
                 print(line, end='') # process line here
                 output_text += line
             # raise ProcessException(command, exitCode, output)
-        self.remove_key_files()
         print("output is ", output_text)
         return output_text
         
