@@ -26,7 +26,7 @@ pipeline {
             agent { label 'nl-cs-glicci' }
             steps{
                 echo 'Deploy'
-                sh 'pwd'
+                sh 'source /home/dat/CoSiMeT/venv/bin/activate'
                 sh 'pyinstaller src/main.py -y'
             }
         }
