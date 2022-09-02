@@ -15,7 +15,7 @@ pipeline {
         stage("test") {
             agent { label 'jenkins' }
             steps{
-                echo 'build'
+                echo 'Test'
                 sh 'whoami'
                 sh 'ls -lart'
                 sh 'uname -a'
@@ -23,12 +23,11 @@ pipeline {
         }
 
         stage("deploy") {
-            agent any
+            agent { label 'nl-cs-glicci' }
             steps{
-                echo 'build'
-                sh 'whoami'
-                sh 'ls -lart'
-                sh 'uname -a'
+                echo 'Deploy'
+                sh 'pwd'
+                sh 'pyinstaller src/main.py -y'
             }
         }
     }
