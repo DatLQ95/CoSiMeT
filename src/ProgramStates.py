@@ -1,9 +1,9 @@
 from importlib.resources import path
 from xmlrpc.client import Server
-from StateMachine.StateMachine import State
-from CloudSightServer import CloudSightServer
+from src.StateMachine.StateMachine import State
+from src.CloudSightServer import CloudSightServer
 import os
-import config
+import src.config
 
 class OpenMenu(State):
     def __init__(self):
@@ -378,9 +378,10 @@ class LoginState(State):
         # user_name= input("User name: ")
         # user_password = input("Password: ")
         # FIXME: 
-        user_name = config.database['user']
-        user_password = config.database['password']
+        user_name = src.config.database['user']
+        user_password = src.config.database['password']
         if self.program.processor.check_user(user_name, user_password):
+            # print("Hello")
             self.go_to_open_menu()    
         
     def show_banner(self):

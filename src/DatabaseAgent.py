@@ -1,4 +1,4 @@
-from CloudSightServer import CloudSightServer
+from src.CloudSightServer import CloudSightServer
 import mysql.connector
 import mysql
 from mysql.connector.locales.eng import client_error
@@ -23,20 +23,22 @@ class DatabaseAgent:
         pass
 
     def check_connection(self, host, user, password, database, table_name):
-        try:
-            self.mydb = mysql.connector.connect(
-                host=host,
-                user=user,
-                password=password,
-                database=database, 
-                # auth_plugin='mysql_native_password',
-            )
-            self.table_name = table_name
-            self.create_table(self.table_name)
-            return True
-        except:
-            print("An exception occurred")
-            return False
+        #FIXME: 
+
+        # try:
+        self.mydb = mysql.connector.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=database, 
+            auth_plugin='mysql_native_password',
+        )
+        self.table_name = table_name
+        self.create_table(self.table_name)
+        return True
+        # except:
+        #     print("An exception occurred")
+        #     return False
 
     def get_all_CS_servers(self):
         mycursor = self.mydb.cursor()

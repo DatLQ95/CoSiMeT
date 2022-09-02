@@ -1,14 +1,14 @@
 import os
 from datetime import datetime
 import stat
-import config
+import src.config
 from stat import *
 
 class CloudSightServer:
-    def __init__(self, name, url, remote_user, access_port, key_file_path=None, key = None, status= config.cs_server_info['default_status'], \
-                version = config.cs_server_info['default_version'], \
-                last_time_update_info = config.cs_server_info['default_date'], \
-                certi_expiry_date = config.cs_server_info['default_expiry_date']):
+    def __init__(self, name, url, remote_user, access_port, key_file_path=None, key = None, status= src.config.cs_server_info['default_status'], \
+                version = src.config.cs_server_info['default_version'], \
+                last_time_update_info = src.config.cs_server_info['default_date'], \
+                certi_expiry_date = src.config.cs_server_info['default_expiry_date']):
         self._name = name
         self._url = url
         self._key = key

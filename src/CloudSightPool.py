@@ -1,14 +1,15 @@
 from http import server
 from unicodedata import name
-from CloudSightServer import CloudSightServer
+
 import socket
 import ssl
 from datetime import datetime
 from urllib.request import Request, urlopen, ssl, socket
 from urllib.error import URLError, HTTPError
 import json
-import config
-from ConnectionAgent import ConnectionAgent
+import src.config
+from src.ConnectionAgent import ConnectionAgent
+from src.CloudSightServer import CloudSightServer
 
 class CloudSightPool:
     def __init__(self):
@@ -99,7 +100,7 @@ class CloudSightPool:
     def ssl_expiry_datetime(self, hostname):
         context = ssl.create_default_context()
 
-        with socket.create_connection((hostname, config.cs_server_info['admin_port'])) as sock:
+        with socket.create_connection((hostname, src.config.cs_server_info['admin_port'])) as sock:
             with context.wrap_socket(sock, server_hostname=hostname) as ssock:
                 # print(ssock.version())
                 data = json.dumps(ssock.getpeercert()["notAfter"])
@@ -133,3 +134,24 @@ class CloudSightPool:
         cs_server = self.update_server_certificate(cs_server)
         self.update_CS(cs_server)
         return cs_server
+    
+    def check_version(self, version, cs_server):
+        '''
+        If the verion is bigger than CS server current version.
+        Check th upgrade condition also :)
+        
+        4.x -> 5.x -> 6.0.x -> 6.1.x -> 6.2.x
+        '''
+        if len(version) == 5:
+            if version[0].isnumeric() and version[2].isnumeric() and version[4].isnumeric():
+                cs_server_current_version = cs_server.get_version()
+                if int(cs_server_current_version[0]) + 1 == int(version[0]):
+                    if int(version[2]) == 0:
+                        return True
+                elif int(cs_server_current_version[0]) == int(version[0]):
+                    if int(cs_server_current_version[2]) + 1 == int(version[2]):
+                        return True
+                    elif int(cs_server_current_version[2]) == int(version[2]):
+                        if int(cs_server_current_version[4]) < int(version[4]):
+                            return True
+        return False

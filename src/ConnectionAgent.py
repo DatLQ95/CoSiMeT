@@ -2,9 +2,9 @@ from ensurepip import version
 import re
 import subprocess
 from unicodedata import name
-import config
+import src.config
 import yaml
-from CloudSightServer import CloudSightServer
+from src.CloudSightServer import CloudSightServer
 import os
 from datetime import datetime
 import sys
@@ -68,8 +68,8 @@ class ConnectionAgent:
         avail_list = list()
         for cs_server in hostlist:
             print(cs_server.get_status())
-            print(config.status_state['available'])
-            if cs_server.get_status() == config.status_state['available']:
+            print(src.config.status_state['available'])
+            if cs_server.get_status() == src.config.status_state['available']:
                 avail_list.append(cs_server)
             else:
                 pass
@@ -101,7 +101,7 @@ class ConnectionAgent:
         dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
         print(dict_file)
         
-        with open(config.ansible_data['inventory_file_path'], 'w') as file:
+        with open(src.config.ansible_data['inventory_file_path'], 'w') as file:
             yaml.dump(dict_file, file)
 
     def prepare_cs_server_list_file_for_sanity_check(self, cs_server_list):
@@ -116,14 +116,14 @@ class ConnectionAgent:
                 dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
             dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
 
-            dict_file['all']['hosts'][cs_server.get_name()]['license_server_address'] = config.license_server_info['license_server_address']
-            dict_file['all']['hosts'][cs_server.get_name()]['license_server_IP_addr'] = config.license_server_info['license_server_IP_addr']
-            dict_file['all']['hosts'][cs_server.get_name()]['license_server_port'] = config.license_server_info['license_server_port']
+            dict_file['all']['hosts'][cs_server.get_name()]['license_server_address'] = src.config.license_server_info['license_server_address']
+            dict_file['all']['hosts'][cs_server.get_name()]['license_server_IP_addr'] = src.config.license_server_info['license_server_IP_addr']
+            dict_file['all']['hosts'][cs_server.get_name()]['license_server_port'] = src.config.license_server_info['license_server_port']
             dict_file['all']['hosts'][cs_server.get_name()]['domain'] = cs_server.get_url()
 
         print(dict_file)
         
-        with open(config.ansible_data['inventory_file_path'], 'w') as file:
+        with open(src.config.ansible_data['inventory_file_path'], 'w') as file:
             yaml.dump(dict_file, file)
     
     def prepare_cs_server_list_file_for_upgrade(self, version, cs_server_list):
@@ -138,15 +138,15 @@ class ConnectionAgent:
                 dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
             dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
 
-            dict_file['all']['hosts'][cs_server.get_name()]['cloudsight_server_install_url'] = config.installation_info['cloudsight_server_install_url']
-            dict_file['all']['hosts'][cs_server.get_name()]['inteno_user'] = config.installation_info['inteno_user']
-            dict_file['all']['hosts'][cs_server.get_name()]['inteno_password'] = config.installation_info['inteno_password']
+            dict_file['all']['hosts'][cs_server.get_name()]['cloudsight_server_install_url'] = src.config.installation_info['cloudsight_server_install_url']
+            dict_file['all']['hosts'][cs_server.get_name()]['inteno_user'] = src.config.installation_info['inteno_user']
+            dict_file['all']['hosts'][cs_server.get_name()]['inteno_password'] = src.config.installation_info['inteno_password']
             dict_file['all']['hosts'][cs_server.get_name()]['cloudsight_version'] = version
 
 
         print(dict_file)
         
-        with open(config.ansible_data['inventory_file_path'], 'w') as file:
+        with open(src.config.ansible_data['inventory_file_path'], 'w') as file:
             yaml.dump(dict_file, file)
 
     def prepare_cs_server_list_file_for_certificate_renewal(self, path, cs_server_list):
@@ -167,11 +167,11 @@ class ConnectionAgent:
 
         print(dict_file)
         
-        with open(config.ansible_data['inventory_file_path'], 'w') as file:
+        with open(src.config.ansible_data['inventory_file_path'], 'w') as file:
             yaml.dump(dict_file, file)
 
     def read_host_file(self):
-        with open(config.ansible_data['inventory_file_path']) as file:
+        with open(src.config.ansible_data['inventory_file_path']) as file:
             # The FullLoader parameter handles the conversion from YAML
             # scalar values to Python the dictionary format
             cs_server_lists = yaml.load(file, Loader=yaml.FullLoader)
@@ -182,7 +182,7 @@ class ConnectionAgent:
 
     def run_ansible(self, role):
         output_text = str()
-        with subprocess.Popen(['ansible-playbook', '-i', config.ansible_data['inventory_file_path'], config.ansible_data['main_file_path'], '--tags', role], stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
+        with subprocess.Popen(['ansible-playbook', '-i', src.config.ansible_data['inventory_file_path'], src.config.ansible_data['main_file_path'], '--tags', role], stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
             for line in p.stdout:
                 print(line, end='') # process line here
                 output_text += line
@@ -196,7 +196,7 @@ class ConnectionAgent:
         '''
         cs_server.set_status()
         cs_server.set_update_time()
-        if cs_server.get_status() == config.status_state['available']:
+        if cs_server.get_status() == src.config.status_state['available']:
             cs_server.set_version()
             cs_server.set_expiry_date_certificate()
         return cs_server
@@ -212,15 +212,15 @@ class ConnectionAgent:
         result = out.find('UNREACHABLE!')
         print(result)
         if result != -1: 
-            cs_server.set_status(config.status_state['unreachable'])
+            cs_server.set_status(src.config.status_state['unreachable'])
 
         result = out.find('ok:')
         if result != -1: 
-            cs_server.set_status(config.status_state['available'])
+            cs_server.set_status(src.config.status_state['available'])
             
         result = out.find('FAILED!')
         if result != -1: 
-            cs_server.set_status(config.status_state['failed'])
+            cs_server.set_status(src.config.status_state['failed'])
         
         if cs_server.get_status() == "Available":
             result = out.find('iopsys.server.version')
