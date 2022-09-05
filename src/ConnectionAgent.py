@@ -116,9 +116,9 @@ class ConnectionAgent:
                 dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
             dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
 
-            dict_file['all']['hosts'][cs_server.get_name()]['license_server_address'] = src.config.license_server_info['license_server_address']
-            dict_file['all']['hosts'][cs_server.get_name()]['license_server_IP_addr'] = src.config.license_server_info['license_server_IP_addr']
-            dict_file['all']['hosts'][cs_server.get_name()]['license_server_port'] = src.config.license_server_info['license_server_port']
+            dict_file['all']['hosts'][cs_server.get_name()]['license_server_address'] = src.config.general_info['license_server_address']
+            dict_file['all']['hosts'][cs_server.get_name()]['license_server_IP_addr'] = src.config.general_info['license_server_IP_addr']
+            dict_file['all']['hosts'][cs_server.get_name()]['license_server_port'] = src.config.general_info['license_server_port']
             dict_file['all']['hosts'][cs_server.get_name()]['domain'] = cs_server.get_url()
 
         print(dict_file)
@@ -138,9 +138,9 @@ class ConnectionAgent:
                 dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
             dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
 
-            dict_file['all']['hosts'][cs_server.get_name()]['cloudsight_server_install_url'] = src.config.installation_info['cloudsight_server_install_url']
-            dict_file['all']['hosts'][cs_server.get_name()]['inteno_user'] = src.config.installation_info['inteno_user']
-            dict_file['all']['hosts'][cs_server.get_name()]['inteno_password'] = src.config.installation_info['inteno_password']
+            dict_file['all']['hosts'][cs_server.get_name()]['cloudsight_server_install_url'] = src.config.general_info['cloudsight_server_install_url']
+            dict_file['all']['hosts'][cs_server.get_name()]['inteno_user'] = src.config.general_info['inteno_user']
+            dict_file['all']['hosts'][cs_server.get_name()]['inteno_password'] = src.config.general_info['inteno_password']
             dict_file['all']['hosts'][cs_server.get_name()]['cloudsight_version'] = version
 
 

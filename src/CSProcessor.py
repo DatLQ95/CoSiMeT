@@ -86,9 +86,7 @@ class CSProcessor():
         Connect to MySQL to check if this user is in database user list
         '''
         self.dbAgent = DatabaseAgent()
-        return self.dbAgent.check_connection(host=src.config.database['host'], \
-            user=user_name, password=user_password, \
-            database=src.config.database['database'], table_name=src.config.database['table'])
+        return self.dbAgent.check_connection(user=user_name, password=user_password)
         
     
     def update_http_certificate(self, cs_server_name, path):
@@ -99,3 +97,7 @@ class CSProcessor():
         self.cspool.update_http_certificate(self.get_cloudsight_server(cs_server_name=cs_server_name), path)
         self.dbAgent.update_CS_server(self.get_cloudsight_server(cs_server_name=cs_server_name))
         pass
+
+    def update_general_info(self):
+        # FIXME: 
+        self.dbAgent.get_general_info()

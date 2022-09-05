@@ -100,7 +100,7 @@ class CloudSightPool:
     def ssl_expiry_datetime(self, hostname):
         context = ssl.create_default_context()
 
-        with socket.create_connection((hostname, src.config.cs_server_info['admin_port'])) as sock:
+        with socket.create_connection((hostname, src.config.general_info['cs_admin_port'])) as sock:
             with context.wrap_socket(sock, server_hostname=hostname) as ssock:
                 # print(ssock.version())
                 data = json.dumps(ssock.getpeercert()["notAfter"])

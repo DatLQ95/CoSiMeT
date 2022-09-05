@@ -27,4 +27,5 @@ if __name__ == "__main__":
 
 # Finish certificate renewal, need to test to verify
 # Who did what ? on which server? which action already taken on each server.
-
+# Transfer info from config to mysql database 
+# And build it again!

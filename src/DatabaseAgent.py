@@ -3,6 +3,7 @@ import mysql.connector
 import mysql
 from mysql.connector.locales.eng import client_error
 from mysql.connector.plugins import *
+import src.config
 
 class DatabaseAgent:
     def __init__(self):
@@ -22,18 +23,19 @@ class DatabaseAgent:
         #     print("An exception occurred")
         pass
 
-    def check_connection(self, host, user, password, database, table_name):
+    def check_connection(self, user, password):
         #FIXME: 
 
         # try:
         self.mydb = mysql.connector.connect(
-            host=host,
+            host=src.config.database['host'],
             user=user,
             password=password,
-            database=database, 
+            database=src.config.database['database'], 
             auth_plugin='mysql_native_password',
         )
-        self.table_name = table_name
+        self.table_name =src.config.database['table']
+        self.general_info_table = src.config.database['general_info_table']
         self.create_table(self.table_name)
         return True
         # except:
@@ -124,4 +126,11 @@ class DatabaseAgent:
         mycursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (name VARCHAR(50), url VARCHAR(255), server_ssh_key VARCHAR(1024), remote_use VARCHAR(50), status VARCHAR(50), version VARCHAR(10), date VARCHAR(50), PRIMARY KEY(name))")
 
 
-    
+    def get_general_info(self):
+        mycursor = self.mydb.cursor()
+        sql = f"SELECT * FROM {self.general_info_table}"
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+        for item in myresult:
+            if item[0] in src.config.general_info.keys():
+                src.config.general_info[item[0]] = item[1] 

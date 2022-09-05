@@ -1,5 +1,4 @@
 result/
-src/config.py
 src/tmp
 ansible/hosts.yaml
 credentials/
@@ -13,3 +12,4 @@ ansible/roles/test
 ansible/test_site.yml
 venv/
 __pycache__
+tmp/
