@@ -50,7 +50,7 @@ class GUIHelper:
     
 
     def show_banner(self):
-        # os.system('clear')
+        os.system('clear')
         print(f"{Fore.CYAN}----------------------------------------------------")
         print(f"{Fore.CYAN}---------CLOUDSIGHT MANAGEMENT TOOL-----------------")
         print(f"{Fore.CYAN}----------------------------------------------------")
