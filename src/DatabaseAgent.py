@@ -5,7 +5,7 @@ from mysql.connector.locales.eng import client_error
 from mysql.connector.plugins import *
 import src.config
 from os import urandom
-from Crypto.Cipher import AES
+# from Crypto.Cipher import AES
 
 class DatabaseAgent:
     def __init__(self):
@@ -38,7 +38,8 @@ class DatabaseAgent:
             database=src.config.database['database'], 
             auth_plugin='mysql_native_password',
         )
-        self.aes_crypto = AES.new(encryption_key, AES.MODE_CBC, self.iv)
+        self.encryption_key = encryption_key
+        # self.aes_crypto = AES.new(encryption_key, AES.MODE_CBC, self.iv)
         self.table_name =src.config.database['table']
         self.general_info_table = src.config.database['general_info_table']
         self.create_table(self.table_name)
