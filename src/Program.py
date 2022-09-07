@@ -1,7 +1,7 @@
-from StateMachine.StateMachine import State
-from ProgramStates import *
-from GUIHelper import GUIHelper
-from CSProcessor import CSProcessor
+from src.StateMachine.StateMachine import State
+from src.ProgramStates import *
+from src.GUIHelper import GUIHelper
+from src.CSProcessor import CSProcessor
 
 class Program:
 

@@ -1,13 +1,18 @@
-from CloudSightServer import CloudSightServer
+from src.CloudSightServer import CloudSightServer
 import mysql.connector
 import mysql
 from mysql.connector.locales.eng import client_error
 from mysql.connector.plugins import *
+import src.config
+from os import urandom
+# from Crypto.Cipher import AES
 
 class DatabaseAgent:
     def __init__(self):
         #FIXME: we have not deal with the case that we dont habe database in the first place, let's assume we already have the database named: CloudSightServers
         self.mydb = None
+        self.iv = urandom(16)
+        self.aes_crypto = None
         # try:
         #     self.mydb = mysql.connector.connect(
         #         host=host,
@@ -22,21 +27,26 @@ class DatabaseAgent:
         #     print("An exception occurred")
         pass
 
-    def check_connection(self, host, user, password, database, table_name):
-        try:
-            self.mydb = mysql.connector.connect(
-                host=host,
-                user=user,
-                password=password,
-                database=database, 
-                # auth_plugin='mysql_native_password',
-            )
-            self.table_name = table_name
-            self.create_table(self.table_name)
-            return True
-        except:
-            print("An exception occurred")
-            return False
+    def check_connection(self, user, password, encryption_key):
+        #FIXME: 
+
+        # try:
+        self.mydb = mysql.connector.connect(
+            host=src.config.database['host'],
+            user=user,
+            password=password,
+            database=src.config.database['database'], 
+            auth_plugin='mysql_native_password',
+        )
+        self.encryption_key = encryption_key
+        # self.aes_crypto = AES.new(encryption_key, AES.MODE_CBC, self.iv)
+        self.table_name =src.config.database['table']
+        self.general_info_table = src.config.database['general_info_table']
+        self.create_table(self.table_name)
+        return True
+        # except:
+        #     print("An exception occurred")
+        #     return False
 
     def get_all_CS_servers(self):
         mycursor = self.mydb.cursor()
@@ -119,5 +129,14 @@ class DatabaseAgent:
         
     def create_table(self, table_name):
         mycursor = self.mydb.cursor()
-        mycursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (name VARCHAR(50), url VARCHAR(255), server_ssh_key VARCHAR(1024), remote_use VARCHAR(50), status VARCHAR(50), version VARCHAR(10), date VARCHAR(50), PRIMARY KEY(name))")
-        
+        mycursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (name VARCHAR(50), url VARCHAR(255), server_ssh_key VARCHAR(1024), remote_use VARCHAR(50), status VARCHAR(50), version VARCHAR(10), date VARCHAR(50), expiry_date VARCHAR(50), port VARCHAR(50), PRIMARY KEY(name))")
+
+
+    def get_general_info(self):
+        mycursor = self.mydb.cursor()
+        sql = f"SELECT * FROM {self.general_info_table}"
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+        for item in myresult:
+            if item[0] in src.config.general_info.keys():
+                src.config.general_info[item[0]] = item[1] 

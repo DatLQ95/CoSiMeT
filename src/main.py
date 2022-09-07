@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-from Program import Program
+from src.Program import Program
 
 def main():
     program = Program()
     while (True):
-        pass
         program.run()
     # print("hello")
 
@@ -14,17 +13,28 @@ if __name__ == "__main__":
 # TODO: 
 # Dev job: 
 # Store the key using hash algorithm.
-# Notice State Machine -> give out notice 
-# Async in Ansible
 # deploy feature
-# Renewal Certificate feature
-# Remove the /tmp file after connection
 
 # DevOps: 
 # Set up Jenkins job to test the python code 
 # Set up Jenkins job to send the code to target machine
 # Set up Countinuos Deployment to deploy to our internal machine.
+# Set up build job in the target machine
 # Write the doc how to use the program.
 
 # TODO:
 # Write a more brief report, summarize info in better way, how better -> ask Glicci!.
+
+# Finish certificate renewal, need to test to verify
+# Who did what ? on which server? which action already taken on each server.
+# Transfer info from config to mysql database 
+# And build it again!
+
+# TODO: Security:
+# Auto remove the key after the server is added.
+# Security for the DB best practice.
+# Arrow in the text when we adding something.
+# Output of sanity check, where is the result file! Result forler 
+# Write the upgrade script later!
+# Work on the server_test database insteads of the real one! Think of a way to do this when we build a to the target machine.
+

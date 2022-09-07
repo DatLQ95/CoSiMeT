@@ -1,6 +1,6 @@
-from CloudSightPool import CloudSightPool
-from DatabaseAgent import DatabaseAgent
-import config
+from src.CloudSightPool import CloudSightPool
+from src.DatabaseAgent import DatabaseAgent
+import src.config
 import sys
 import socket
 import ssl
@@ -9,10 +9,10 @@ class CSProcessor():
     def __init__(self):
         self.cspool = CloudSightPool()
         self.dbAgent = None
-        # self.dbAgent = DatabaseAgent(host=config.database['host'], \
-        #     user=config.database['user'], password=config.database['password'], \
-        #     database=config.database['database'], table_name=config.database['table'])
-        
+        self.encryption = None
+        # self.dbAgent = DatabaseAgent(host=src.config.database['host'], \
+        #     user=src.config.database['user'], password=src.config.database['password'], \
+        #     database=src.config.database['database'], table_name=src.config.database['table'])
 
     def update_cs_pool(self):
         self.cspool.update_CS_list(self.dbAgent.get_all_CS_servers())
@@ -35,9 +35,9 @@ class CSProcessor():
     
     def add_server(self, cs_server):
         self.cspool.add_server(cs_server)
-        print(self.cspool.get_CS_list())
-        print(cs_server)
-        print(self.cspool.get_cloudsight_servers(cs_server))
+        # print(self.cspool.get_CS_list())
+        # print(cs_server)
+        # print(self.cspool.get_cloudsight_servers(cs_server))
         self.dbAgent.update_CS_server(cs_server)
     
     def remove_server(self, cs_server_name):
@@ -52,8 +52,8 @@ class CSProcessor():
         
         pass
 
-    def update_certificate(self, cs_server_list):
-        self.cspool.update_certificate(cs_server_list)
+    def update_certificate_expiry_date(self, cs_server_list):
+        self.cspool.update_certificate_expiry_date(cs_server_list)
         pass
 
     def connect_ssh(self, cs_server_name):
@@ -66,32 +66,13 @@ class CSProcessor():
     def update_server_status(self, cs_server_name):
         self.cspool.check_status(self.get_cloudsight_server(cs_server_name=cs_server_name))
         self.dbAgent.update_CS_server(self.get_cloudsight_server(cs_server_name=cs_server_name))
-        if self.get_cloudsight_server(cs_server_name=cs_server_name).get_status() == config.status_state['available']:
+        if self.get_cloudsight_server(cs_server_name=cs_server_name).get_status() == src.config.status_state['available']:
             return True
         else :
             return False
         
     def check_version(self, version, cs_server_name):
-        '''
-        If the verion is bigger than CS server current version.
-        Check th upgrade condition also :)
-        
-        4.x -> 5.x -> 6.0.x -> 6.1.x -> 6.2.x
-        '''
-        if len(version) == 5:
-            if version[0].isnumeric() and version[2].isnumeric() and version[4].isnumeric():
-                cs_server = self.cspool.get_cloudsight_server(cs_server_name=cs_server_name)
-                cs_server_current_version = cs_server.get_version()
-                if int(cs_server_current_version[0]) + 1 == int(version[0]):
-                    if int(version[2]) == 0:
-                        return True
-                elif int(cs_server_current_version[0]) == int(version[0]):
-                    if int(cs_server_current_version[2]) + 1 == int(version[2]):
-                        return True
-                    elif int(cs_server_current_version[2]) == int(version[2]):
-                        if int(cs_server_current_version[4]) < int(version[4]):
-                            return True
-        return False
+        return self.cspool.check_version(version=version,cs_server=self.get_cloudsight_server(cs_server_name=cs_server_name))
 
     def upgrade_server_version(self, version, cs_server_name):
         '''
@@ -101,15 +82,24 @@ class CSProcessor():
         self.dbAgent.update_CS_server(self.get_cloudsight_server(cs_server_name=cs_server_name))
         pass
 
-    def check_user(self, user_name, user_password):
+    def check_user(self, user_name, user_password, encryption_key):
         '''
         Connect to MySQL to check if this user is in database user list
         '''
         self.dbAgent = DatabaseAgent()
-        return self.dbAgent.check_connection(host=config.database['host'], \
-            user=user_name, password=user_password, \
-            database=config.database['database'], table_name=config.database['table'])
+        # self.encryption_key = encryption_key
+        return self.dbAgent.check_connection(user=user_name, password=user_password, encryption_key = encryption_key)
         
     
+    def update_http_certificate(self, cs_server_name, path):
+        '''
+        Update the HTTP certificate for cs_server 
+        '''
+        print("Update Certificate in CS PRogram")
+        self.cspool.update_http_certificate(self.get_cloudsight_server(cs_server_name=cs_server_name), path)
+        self.dbAgent.update_CS_server(self.get_cloudsight_server(cs_server_name=cs_server_name))
+        pass
 
-        
+    def update_general_info(self):
+        # FIXME: 
+        self.dbAgent.get_general_info()

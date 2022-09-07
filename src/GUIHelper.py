@@ -2,13 +2,13 @@ from curses import erasechar
 import os
 from xml.etree.ElementPath import get_parent_map
 from tabulate import tabulate
-from CloudSightServer import CloudSightServer
-from CSProcessor import CSProcessor
+from src.CloudSightServer import CloudSightServer
+from src.CSProcessor import CSProcessor
 
 from colorama import Fore, init
 from colorama import Style
 import sys
-import config
+import src.config
 
 class GUIHelper:
     def __init__(self):
@@ -28,6 +28,10 @@ class GUIHelper:
 
     def select_server_fault_notice(self):
         print(f"{Fore.CYAN}Server's name is not exist in database, please check again!")
+        input("Press anykey to return: ")
+
+    def update_certificate_fail_notice(self):
+        print(f"{Fore.CYAN}The file is not found, please check the path again!")
         input("Press anykey to return: ")
 
     def check_input_requirements(self):
@@ -52,11 +56,11 @@ class GUIHelper:
         print(f"{Fore.CYAN}----------------------------------------------------")
 
     def coloring_status(self, cs_server):
-        if cs_server.get_status() == config.status_state['available']:
+        if cs_server.get_status() == src.config.status_state['available']:
             color = Fore.GREEN
-        elif cs_server.get_status() == config.status_state['failed']:
+        elif cs_server.get_status() == src.config.status_state['failed']:
             color = Fore.YELLOW
-        elif cs_server.get_status() == config.status_state['unreachable']:
+        elif cs_server.get_status() == src.config.status_state['unreachable']:
             color = Fore.RED
         else:
             color = Fore.WHITE

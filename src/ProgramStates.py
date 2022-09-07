@@ -1,8 +1,9 @@
+from importlib.resources import path
 from xmlrpc.client import Server
-from StateMachine.StateMachine import State
-from CloudSightServer import CloudSightServer
+from src.StateMachine.StateMachine import State
+from src.CloudSightServer import CloudSightServer
 import os
-import config
+import src.config
 
 class OpenMenu(State):
     def __init__(self):
@@ -25,6 +26,7 @@ class OpenMenu(State):
     
     def execute(self):
         self.program.processor.update_cs_pool()
+        self.program.processor.update_general_info()
         self.show_banner()
         self.show_all_servers()
         self.show_options()
@@ -183,6 +185,7 @@ class ServerMenu(State):
         self.program.setProgramState(UpdateServerStatus(self.cs_server))
 
     def execute(self):
+        self.remove_key_files()
         self.show_banner()
         self.show_server()
         self.show_options()
@@ -210,6 +213,15 @@ class ServerMenu(State):
     
     def show_banner(self):
         self.program.GUIhelper.show_banner()
+
+    def remove_key_files(self):
+        tmp_path = path = os.getcwd() + "/tmp/"
+        for file_name in os.listdir(tmp_path):
+            # construct full file path
+            file = path + file_name
+            if os.path.isfile(file):
+                print('Deleting file:', file)
+                os.remove(file)
 
 class ServerMenuFail(State):
     
@@ -303,13 +315,18 @@ class UpdateCertificate(State):
         self.program.setProgramState(ServerMenu(self.cs_server))
 
     def execute(self):
-        self.update_certificate()
+        path = input("Path to https.keystore file (ex.: ../files/https.keystore): ")
+        #TODO: Check the input if it is a valid file path: 
+        if os.path.isfile(path):
+            self.update_certificate(path)
+        else:
+            self.program.GUIhelper.update_certificate_fail_notice()
         self.go_to_server_menu()
 
-    def update_certificate(self):
-        print("Not implement this feature yet, sorry, please come back later!")
-        action = input("Press anykey to come back: ")
-        # self.program.processor.update_certificate(self.cs_server)
+    def update_certificate(self, path):
+        # print("Not implement this feature yet, sorry, please come back later!")
+        # action = input("Press anykey to come back: ")
+        self.program.processor.update_http_certificate(self.cs_server, path)
 
 
 class UpgradeServerVersion(State):
@@ -359,12 +376,12 @@ class LoginState(State):
 
     def execute(self):
         self.show_banner()
-        # user_name= input("User name: ")
-        # user_password = input("Password: ")
+        user_name= input("User name: ")
+        user_password = input("Password: ")
+        encryption_key = input("Password: ")
         # FIXME: 
-        user_name = config.database['user']
-        user_password = config.database['password']
-        if self.program.processor.check_user(user_name, user_password):
+        if self.program.processor.check_user(user_name, user_password, encryption_key):
+            # print("Hello")
             self.go_to_open_menu()    
         
     def show_banner(self):
