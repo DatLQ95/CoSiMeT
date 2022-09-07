@@ -28,6 +28,7 @@ pipeline {
                 echo 'Deploy'
                 sh "export COSIMET_DB_TABLE=servers"
                 sh """. /home/dat/CoSiMeT/venv/bin/activate
+                pip install -r requirements.txt
                 pyinstaller src/main.py -y"""
             }
         }
