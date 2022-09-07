@@ -10,6 +10,17 @@
     url_username: "{{ inteno_user }}"
     url_password: "{{ inteno_password }}"
   when: ls_output.stdout.find('{{ cloudsight_version }}') == -1
+  async: 3600
+  poll: 20
+
+# Check if the cloudsight-install-version-old is there
+# If yes -> remove it
+- name: Remove the cloudsight-server-install-old file
+  file:
+    state: absent
+    path: /home/{{ ansible_user }}/cloudsight-server-install-old/
+  become: yes
+  when: ls_output.stdout.find('cloudsight-server-install-old') != -1
 
 # Check if cloudsight-install-version is there. 
 # If yes -> rename it to cloudsight-install-version-old
@@ -24,6 +35,8 @@
 # Untar the tarball file:
 - name: Untar the tarball files
   command: "tar -xvf ./cloudsight-install-{{ cloudsight_version }}.tar.bz2"
+  async: 1800
+  poll: 20
 
 # Create a new folder:
 - name: create the directory to install the CS server
@@ -39,7 +52,7 @@
   ignore_errors: yes
   become: yes
   async: 1800
-  poll: 300
+  poll: 20
 
 # Run the deployment command: 
 - name: Execute the deployment
@@ -50,7 +63,7 @@
   become: yes
   register: deploy_out
   async: 3600
-  poll: 300
+  poll: 20
 
 - debug: msg="{{ deploy_out.stdout.split('\n') }}"
 

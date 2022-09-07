@@ -13,3 +13,6 @@ ansible/roles/test
 ansible/test_site.yml
 venv/
 __pycache__
+dist/
+main.spec
+tmp/

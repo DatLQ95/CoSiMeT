@@ -120,6 +120,4 @@ class DatabaseAgent:
     def create_table(self, table_name):
         mycursor = self.mydb.cursor()
         mycursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (name VARCHAR(50), url VARCHAR(255), server_ssh_key VARCHAR(1024), remote_use VARCHAR(50), status VARCHAR(50), version VARCHAR(10), date VARCHAR(50), PRIMARY KEY(name))")
-
-
-    
+        
