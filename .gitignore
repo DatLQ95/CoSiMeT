@@ -13,3 +13,4 @@ ansible/test_site.yml
 venv/
 __pycache__
 tmp/
+*.pyc

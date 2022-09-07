@@ -58,16 +58,33 @@ class CloudSightServer:
 
     def get_tuple_data(self):
         return (self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self._access_port)
+    
+    def get_key(self):
+        return self._key
+    
+    def get_last_time_update_info(self):
+        return self.last_time_update_info
+    
+    def get_certi_expiry_date(self):
+        return self.certi_expiry_date
+    
+    def get_access_port(self):
+        return self._access_port
+    
 
     def create_result_file(self, host):
-        path = '../result/' + host
+        path = os.getcwd() + '/result/' + host
 
         # Check whether the specified path exists or not
         isExist = os.path.exists(path)
 
         if not isExist:
             # Create a new directory because it does not exist
-            os.makedirs(path)
+            try:
+                original_umask = os.umask(0)
+                os.makedirs(path, 0x777)
+            finally:
+                os.umask(original_umask)
         
         file_path = path + "/" + host + "_" + datetime.now().strftime("%d_%m_%Y_%H_%M_%S") + ".json"
         return file_path
@@ -95,7 +112,12 @@ class CloudSightServer:
 
         if not isExist:
             # Create a new directory because it does not exist
-            os.makedirs(path)
+            os.makedirs(path, 0x777)
+            # try:
+            #     original_umask = os.umask(0)
+            #     os.makedirs(path, 0x777)
+            # finally:
+            #     os.umask(original_umask)
 
         if self._key:
             self.key_file_path = path + self.get_name() + "key"

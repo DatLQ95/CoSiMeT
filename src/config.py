@@ -1,8 +1,10 @@
+import os
+
 # Config the Database:
 database = dict(
     host="nl-cs.genexislocal.nl",
     database="CloudSightServers",
-    table="servers",
+    table=os.environ["COSIMET_DB_TABLE"],
     general_info_table="general_info",
 )
 

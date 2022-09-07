@@ -378,10 +378,9 @@ class LoginState(State):
         self.show_banner()
         user_name= input("User name: ")
         user_password = input("Password: ")
+        encryption_key = input("Password: ")
         # FIXME: 
-        # user_name = src.config.database['user']
-        # user_password = src.config.database['password']
-        if self.program.processor.check_user(user_name, user_password):
+        if self.program.processor.check_user(user_name, user_password, encryption_key):
             # print("Hello")
             self.go_to_open_menu()    
         

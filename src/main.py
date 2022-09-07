@@ -29,3 +29,12 @@ if __name__ == "__main__":
 # Who did what ? on which server? which action already taken on each server.
 # Transfer info from config to mysql database 
 # And build it again!
+
+# TODO: Security:
+# Auto remove the key after the server is added.
+# Security for the DB best practice.
+# Arrow in the text when we adding something.
+# Output of sanity check, where is the result file! Result forler 
+# Write the upgrade script later!
+# Work on the server_test database insteads of the real one! Think of a way to do this when we build a to the target machine.
+

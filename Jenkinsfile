@@ -26,6 +26,7 @@ pipeline {
             agent { label 'nl-cs-glicci' }
             steps{
                 echo 'Deploy'
+                sh "export COSIMET_DB_TABLE=servers"
                 sh """. /home/dat/CoSiMeT/venv/bin/activate
                 pyinstaller src/main.py -y"""
             }
