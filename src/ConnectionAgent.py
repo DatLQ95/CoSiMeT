@@ -240,7 +240,7 @@ class ConnectionAgent:
         '''
         print("in sanity process outpyt")
         out = output
-        path = '../result/'
+        path = 'result/'
 
         # Check whether the specified path exists or not
         isExist = os.path.exists(path)
@@ -255,6 +255,6 @@ class ConnectionAgent:
             for cs_server in avail_cs_servers:
                 host_name += cs_server.get_name()
         
-        file_path = path + host_name + "_" + datetime.now().strftime("%d_%m_%Y_%H_%M_%S") + ".txt"
+        file_path = path + host_name + "_" + datetime.now().strftime("%d_%m_%Y_%H_%M_%S") + ".json"
         with open(file_path, "w+") as f:
             f.write(out)
