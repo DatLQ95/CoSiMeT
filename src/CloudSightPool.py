@@ -13,7 +13,6 @@ from src.CloudSightServer import CloudSightServer
 
 class CloudSightPool:
     def __init__(self):
-        #TODO: 
         self.csPoolList = list()
         pass
 

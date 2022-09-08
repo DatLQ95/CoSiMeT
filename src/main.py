@@ -12,26 +12,28 @@ if __name__ == "__main__":
 
 # TODO: 
 # Dev job: 
-# Store the key using hash algorithm.
-# deploy feature
-
+# Arrow in the text when we adding something.
+# Auto remove the key after the server is added. -> Need to discuss again!
+# Test all the current features : upgrade/ http certificate update. 
+#
+#
 # DevOps: 
-# Set up Jenkins job to test the python code 
-# Set up Jenkins job to send the code to target machine
-# Set up Countinuos Deployment to deploy to our internal machine.
-# Set up build job in the target machine
 # Write the doc how to use the program.
-
+# Set up Jenkins to deploy dev branch to test server / master branch on the prod server
+#
+#
 # TODO:
 # Write a more brief report, summarize info in better way, how better -> ask Glicci!.
-
+#
 # Finish certificate renewal, need to test to verify
 # Who did what ? on which server? which action already taken on each server.
 # Transfer info from config to mysql database 
 # And build it again!
-
+# 
+# 
 # TODO: Security:
-# Auto remove the key after the server is added.
 # Security for the DB best practice.
-# Arrow in the text when we adding something.
-# Write the upgrade script later!
+# add exception handling for every outsider module!
+# Encrypt the info in general_info table!
+# Password with blank info (getpass module)
+# Change the encryption key feature! For now, just 1 key

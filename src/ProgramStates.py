@@ -25,6 +25,7 @@ class OpenMenu(State):
         self.program.processor.exit_program()
     
     def execute(self):
+        self.remove_key_files()
         self.program.processor.update_cs_pool()
         self.program.processor.update_general_info()
         self.show_banner()
@@ -43,6 +44,15 @@ class OpenMenu(State):
             self.go_to_exit()
         else:
             pass
+
+    def remove_key_files(self):
+        tmp_path = path = os.getcwd() + "/tmp/"
+        for file_name in os.listdir(tmp_path):
+            # construct full file path
+            file = path + file_name
+            if os.path.isfile(file):
+                print('Deleting file:', file)
+                os.remove(file)
 
     def show_all_servers(self):
         self.program.GUIhelper.list_servers(self.program.processor.get_all_cloudsight_server())
@@ -316,7 +326,6 @@ class UpdateCertificate(State):
 
     def execute(self):
         path = input("Path to https.keystore file (ex.: ../files/https.keystore): ")
-        #TODO: Check the input if it is a valid file path: 
         if os.path.isfile(path):
             self.update_certificate(path)
         else:
@@ -340,7 +349,6 @@ class UpgradeServerVersion(State):
 
     def execute(self):
         version = input("Version (Fill in the version you want to update in format x.x.x, ex: 6.2.5): ")
-        #TODO: Check the correct target verion here!!! 
         if self.program.processor.check_version(version, self.cs_server):    
             self.upgrade_server_version(version)
         else:
@@ -378,11 +386,16 @@ class LoginState(State):
         self.show_banner()
         user_name= input("User name: ")
         user_password = input("Password: ")
-        encryption_key = input("Encryption key: ")
+        src.config.general_info['crypto_key'] = input("Encryption key: ")
         # FIXME: 
-        if self.program.processor.check_user(user_name, user_password, encryption_key):
+        if self.program.processor.check_user(user_name, user_password):
             # print("Hello")
-            self.go_to_open_menu()    
+            if self.program.processor.check_crypto_key():
+                self.go_to_open_menu() 
+            else :
+                self.program.processor.exit_program()
+        else : 
+            self.program.processor.exit_program()  
         
     def show_banner(self):
         self.program.GUIhelper.show_banner()

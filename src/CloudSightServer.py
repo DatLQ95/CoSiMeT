@@ -3,6 +3,15 @@ from datetime import datetime
 import stat
 import src.config
 from stat import *
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
+import sys
+import binascii
+import base64
+
 
 class CloudSightServer:
     def __init__(self, name, url, remote_user, access_port, key_file_path=None, key = None, status= src.config.cs_server_info['default_status'], \
@@ -19,6 +28,7 @@ class CloudSightServer:
         self._remote_user= remote_user
         self.last_time_update_info = last_time_update_info
         self.certi_expiry_date =  certi_expiry_date
+        self.fernet = None
 
     def get_access_port(self):
         return self._access_port
@@ -97,19 +107,26 @@ class CloudSightServer:
     
     def get_certi_expiry_date(self):
         return self.certi_expiry_date
+
+    def get_key(self, password):
+        # salt = os.urandom(16)
+        kdf = PBKDF2HMAC(algorithm=hashes.SHA256(),length=32,salt = src.config.general_info['salt'].encode(),iterations=100,backend=default_backend())
+        key=base64.urlsafe_b64encode(kdf.derive(password))
+        return key
     
     def extract_key(self):
         # Convert digital data to binary format
+        self.fernet = Fernet(self.get_key(src.config.general_info['crypto_key'].encode()))
         if os.path.isfile(self.key_file_path):
             with open(self.key_file_path, 'rb') as file:
-                self._key = file.read()
+                self._key = self.fernet.encrypt(file.read())
                 print(self._key)
     
     def create_key_file_path(self):
         path = os.getcwd() + "/tmp/"
         # Form: name_key
         isExist = os.path.exists(path)
-
+        self.fernet = Fernet(self.get_key(src.config.general_info['crypto_key'].encode()))
         if not isExist:
             # Create a new directory because it does not exist
             os.makedirs(path, 0x777)
@@ -122,7 +139,8 @@ class CloudSightServer:
         if self._key:
             self.key_file_path = path + self.get_name() + "key"
             with open(self.key_file_path, 'wb') as file:
-                file.write(self._key)
+                # TODO: try catch for wrong crypto key here!
+                file.write(self.fernet.decrypt(self._key))
             os.chmod(self.key_file_path, stat.S_IRUSR | stat.S_IWUSR)
             print(self.key_file_path)
     

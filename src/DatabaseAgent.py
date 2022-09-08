@@ -5,7 +5,7 @@ from mysql.connector.locales.eng import client_error
 from mysql.connector.plugins import *
 import src.config
 from os import urandom
-# from Crypto.Cipher import AES
+import hashlib
 
 class DatabaseAgent:
     def __init__(self):
@@ -27,26 +27,32 @@ class DatabaseAgent:
         #     print("An exception occurred")
         pass
 
-    def check_connection(self, user, password, encryption_key):
-        #FIXME: 
+    def check_connection(self, user, password):
+        try:
+            self.mydb = mysql.connector.connect(
+                host=src.config.database['host'],
+                user=user,
+                password=password,
+                database=src.config.database['database'], 
+                auth_plugin='mysql_native_password',
+            )
+            self.table_name =src.config.database['table']
+            self.general_info_table = src.config.database['general_info_table']
+            self.create_table(self.table_name)
+            return True
+        except:
+            print("An exception occurred")
 
-        # try:
-        self.mydb = mysql.connector.connect(
-            host=src.config.database['host'],
-            user=user,
-            password=password,
-            database=src.config.database['database'], 
-            auth_plugin='mysql_native_password',
-        )
-        self.encryption_key = encryption_key
-        # self.aes_crypto = AES.new(encryption_key, AES.MODE_CBC, self.iv)
-        self.table_name =src.config.database['table']
-        self.general_info_table = src.config.database['general_info_table']
-        self.create_table(self.table_name)
-        return True
-        # except:
-        #     print("An exception occurred")
-        #     return False
+    def check_crypto_key(self):
+        mycursor = self.mydb.cursor()
+        sql = f"SELECT * FROM {self.general_info_table} WHERE item=\"crypto_key_hash\""
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+        current_hash = hashlib.sha224(src.config.general_info['crypto_key'].encode()).hexdigest()
+        if myresult[0][1] == current_hash:
+            return True
+        else :
+            return False
 
     def get_all_CS_servers(self):
         mycursor = self.mydb.cursor()
@@ -87,7 +93,6 @@ class DatabaseAgent:
         data = list()
         print(cs_server_list)
         for cs_server in cs_server_list:
-            # TODO: check if the server is there, if it is, then we remove the old one
             if self.check_if_server_exist(cs_server):
                 self.remove_server(cs_server)
             data.append(cs_server.get_tuple_data())
@@ -139,4 +144,4 @@ class DatabaseAgent:
         myresult = mycursor.fetchall()
         for item in myresult:
             if item[0] in src.config.general_info.keys():
-                src.config.general_info[item[0]] = item[1] 
+                src.config.general_info[item[0]] = item[1]

@@ -35,9 +35,6 @@ class CSProcessor():
     
     def add_server(self, cs_server):
         self.cspool.add_server(cs_server)
-        # print(self.cspool.get_CS_list())
-        # print(cs_server)
-        # print(self.cspool.get_cloudsight_servers(cs_server))
         self.dbAgent.update_CS_server(cs_server)
     
     def remove_server(self, cs_server_name):
@@ -82,13 +79,19 @@ class CSProcessor():
         self.dbAgent.update_CS_server(self.get_cloudsight_server(cs_server_name=cs_server_name))
         pass
 
-    def check_user(self, user_name, user_password, encryption_key):
+    def check_user(self, user_name, user_password):
         '''
         Connect to MySQL to check if this user is in database user list
         '''
         self.dbAgent = DatabaseAgent()
-        # self.encryption_key = encryption_key
-        return self.dbAgent.check_connection(user=user_name, password=user_password, encryption_key = encryption_key)
+        return self.dbAgent.check_connection(user=user_name, password=user_password)
+    
+    
+    def check_crypto_key(self):
+        '''
+        Connect to MySQL to check if this user is in database user list
+        '''
+        return self.dbAgent.check_crypto_key()
         
     
     def update_http_certificate(self, cs_server_name, path):
@@ -101,5 +104,4 @@ class CSProcessor():
         pass
 
     def update_general_info(self):
-        # FIXME: 
         self.dbAgent.get_general_info()

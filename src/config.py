@@ -29,6 +29,8 @@ general_info = dict(
     license_server_address = None,
     license_server_IP_addr = None, 
     license_server_port = None,
+    salt = None,
+    crypto_key = None,
 )
 
 
