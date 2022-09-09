@@ -10,7 +10,8 @@ class CloudSightServer:
     def __init__(self, name, url, remote_user, access_port, key_file_path=None, key = None, status= src.config.cs_server_info['default_status'], \
                 version = src.config.cs_server_info['default_version'], \
                 last_time_update_info = src.config.cs_server_info['default_date'], \
-                certi_expiry_date = src.config.cs_server_info['default_expiry_date']):
+                certi_expiry_date = src.config.cs_server_info['default_expiry_date'], \
+                certi_issuer = None):
         self._name = name
         self._url = url
         self._key = key
@@ -21,6 +22,7 @@ class CloudSightServer:
         self._remote_user= remote_user
         self.last_time_update_info = last_time_update_info
         self.certi_expiry_date =  certi_expiry_date
+        self.certi_issuer = certi_issuer
 
     def get_access_port(self):
         return self._access_port
@@ -56,13 +58,13 @@ class CloudSightServer:
         print(self._name, self._url, self.status, self.version)
     
     def get_data(self):
-        return [self._name, self._url, self.status, self.version, self.last_time_update_info, self.certi_expiry_date]
+        return [self._name, self._url, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self.certi_issuer]
 
     def get_tuple_data(self):
-        return (self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self._access_port)
+        return (self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self._access_port, self.certi_issuer)
     
     def get_list_data(self):
-        return [self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self._access_port]
+        return [self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self._access_port, self.certi_issuer]
     
     
     def get_key(self):
@@ -73,6 +75,9 @@ class CloudSightServer:
     
     def get_certi_expiry_date(self):
         return self.certi_expiry_date
+    
+    def get_certi_issuer(self):
+        return self.certi_issuer
     
     def get_access_port(self):
         return self._access_port
@@ -101,8 +106,8 @@ class CloudSightServer:
     def set_certi_expiry_date(self, certi_expiry_date):
         self.certi_expiry_date = certi_expiry_date
     
-    def get_certi_expiry_date(self):
-        return self.certi_expiry_date
+    def set_certi_issuer(self, certi_issuer):
+        self.certi_issuer = certi_issuer
     
     def extract_key(self):
         # Convert digital data to binary format

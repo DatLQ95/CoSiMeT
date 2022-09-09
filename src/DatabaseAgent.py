@@ -81,7 +81,7 @@ class DatabaseAgent:
         myresult = mycursor.fetchall()
         cs_server_list = list()
         for x in myresult:
-            cs_server = CloudSightServer(name=x[0], url=x[1], key=self.fernet.decrypt(x[2]),  remote_user=x[3], status=x[4], version=x[5], last_time_update_info=x[6], certi_expiry_date= x[7], access_port= x[8])
+            cs_server = CloudSightServer(name=x[0], url=x[1], key=self.fernet.decrypt(x[2]),  remote_user=x[3], status=x[4], version=x[5], last_time_update_info=x[6], certi_expiry_date= x[7], access_port= x[8], certi_issuer=x[9])
             cs_server_list.append(cs_server)
         return cs_server_list
 
@@ -117,7 +117,7 @@ class DatabaseAgent:
     def update_CS_servers(self, cs_server_list):
         mycursor = self.mydb.cursor()
         
-        sql = f"INSERT INTO {self.table_name} (name, url , server_ssh_key , remote_use , status, version , date, expiry_date, port) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        sql = f"INSERT INTO {self.table_name} (name, url , server_ssh_key , remote_use , status, version , date, expiry_date, port, certi_issuer) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         
         data = list()
         print(cs_server_list)
@@ -136,7 +136,7 @@ class DatabaseAgent:
     def update_CS_server(self, cs_server):
         mycursor = self.mydb.cursor()
 
-        sql = f"INSERT INTO {self.table_name} (name, url , server_ssh_key , remote_use , status, version , date, expiry_date, port) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        sql = f"INSERT INTO {self.table_name} (name, url , server_ssh_key , remote_use , status, version , date, expiry_date, port, certi_issuer) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
         
         data = list()
         if self.check_if_server_exist(cs_server):
@@ -164,7 +164,7 @@ class DatabaseAgent:
         
     def create_table(self, table_name):
         mycursor = self.mydb.cursor()
-        mycursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (name VARCHAR(50), url VARCHAR(255), server_ssh_key VARCHAR(1024), remote_use VARCHAR(50), status VARCHAR(50), version VARCHAR(10), date VARCHAR(50), expiry_date VARCHAR(50), port VARCHAR(50), PRIMARY KEY(name))")
+        mycursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (name VARCHAR(50), url VARCHAR(255), server_ssh_key VARCHAR(1024), remote_use VARCHAR(50), status VARCHAR(50), version VARCHAR(10), date VARCHAR(50), expiry_date VARCHAR(50), port VARCHAR(50), certi_issuer VARCHAR(50), PRIMARY KEY(name))")
 
     def erase_general_info_table(self):
         mycursor = self.mydb.cursor()
