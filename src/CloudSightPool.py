@@ -81,17 +81,18 @@ class CloudSightPool:
         for cs_server in cs_server_list:
             print(cs_server.get_url())
             try:
-                exprity_date = self.ssl_expiry_datetime(cs_server.get_url())
+                exprity_date, certi_issuer = self.ssl_expiry_datetime(cs_server.get_url())
                 cs_server.set_certi_expiry_date(exprity_date)
+                cs_server.set_certi_issuer(certi_issuer)
             except: 
                 print("Unreachable")
         return cs_server_list
     
     def update_server_certificate(self, cs_server):
         try:
-            exprity_date = self.ssl_expiry_datetime(cs_server.get_url())
-            print("expiry_date: ", exprity_date)
+            exprity_date, certi_issuer = self.ssl_expiry_datetime(cs_server.get_url())
             cs_server.set_certi_expiry_date(exprity_date)
+            cs_server.set_certi_issuer(certi_issuer)
         except: 
             print("Unreachable")
         return cs_server
@@ -102,9 +103,10 @@ class CloudSightPool:
         with socket.create_connection((hostname, src.config.general_info['cs_admin_port'])) as sock:
             with context.wrap_socket(sock, server_hostname=hostname) as ssock:
                 # print(ssock.version())
-                data = json.dumps(ssock.getpeercert()["notAfter"])
-                # print(ssock.getpeercert())
-        return data
+                expiry_date = json.dumps(ssock.getpeercert()["notAfter"])
+                issuer = json.dumps(ssock.getpeercert()["issuer"])
+                print(ssock.getpeercert())
+        return expiry_date, issuer
 
     def check_status(self, cs_server):
         ansibleHelper = ConnectionAgent()
