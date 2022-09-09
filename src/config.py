@@ -6,6 +6,7 @@ database = dict(
     database="CloudSightServers",
     table=os.environ["COSIMET_DB_TABLE"],
     general_info_table="general_info",
+    constant_table = "constant_info",
 )
 
 # CS server default info

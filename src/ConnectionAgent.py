@@ -255,6 +255,6 @@ class ConnectionAgent:
             for cs_server in avail_cs_servers:
                 host_name += cs_server.get_name()
         
-        file_path = path + host_name + "_" + datetime.now().strftime("%d_%m_%Y_%H_%M_%S") + ".json"
+        file_path = path + host_name + "_" + datetime.now().strftime("%d_%m_%Y_%H_%M_%S") + ".txt"
         with open(file_path, "w+") as f:
             f.write(out)

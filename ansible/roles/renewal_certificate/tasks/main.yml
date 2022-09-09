@@ -18,7 +18,7 @@
   ignore_errors: yes
   become: yes
   async: 1800
-  poll: 60
+  poll: 20
 
 # Replace the old http.keystore with a new one
 - name: Delete the http.keystore
@@ -40,7 +40,7 @@
 
 - name: Copy the key files 
   copy:  
-    src: ../../../../src/{{ key_file_path }}
+    src: ../../../../{{ key_file_path }}
     dest: ~/cloudsight_{{ cloudsight_version }}_{{ time_str }}/
 
 # Run the deployment command: 
@@ -52,7 +52,7 @@
   become: yes
   register: deploy_out
   async: 3600
-  poll: 60
+  poll: 20
 
 - debug: msg="{{ deploy_out.stdout.split('\n') }}"
 

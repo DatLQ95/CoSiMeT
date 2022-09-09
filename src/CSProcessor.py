@@ -105,3 +105,6 @@ class CSProcessor():
 
     def update_general_info(self):
         self.dbAgent.get_general_info()
+
+    def update_fernet(self):
+        self.dbAgent.update_fernet()

@@ -325,7 +325,7 @@ class UpdateCertificate(State):
         self.program.setProgramState(ServerMenu(self.cs_server))
 
     def execute(self):
-        path = input("Path to https.keystore file (ex.: ../files/https.keystore): ")
+        path = input("Path to https.keystore file (ex.: files/https.keystore): ")
         if os.path.isfile(path):
             self.update_certificate(path)
         else:
@@ -389,8 +389,8 @@ class LoginState(State):
         src.config.general_info['crypto_key'] = input("Encryption key: ")
         # FIXME: 
         if self.program.processor.check_user(user_name, user_password):
-            # print("Hello")
             if self.program.processor.check_crypto_key():
+                self.program.processor.update_fernet()
                 self.go_to_open_menu() 
             else :
                 self.program.processor.exit_program()

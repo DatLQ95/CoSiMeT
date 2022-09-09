@@ -37,3 +37,6 @@ if __name__ == "__main__":
 # Encrypt the info in general_info table!
 # Password with blank info (getpass module)
 # Change the encryption key feature! For now, just 1 key
+# Develop multiple upgrade servers
+# certbot checking in update status / or print the issuer of the certificate!
+
