@@ -41,12 +41,12 @@ class GUIHelper:
         data = list()
         for cs_server in cs_list:
             data.append(self.coloring_status(cs_server))
-        print (tabulate(data, headers=["Name", "URL", "Status", "Version", "Date updated last time", "Certificate expiry date"]))
+        print (tabulate(data, headers=["Name", "URL", "Status", "Version", "Date updated last time", "Certificate expiry date", "Certificate Issuer"]))
     
     def show_server(self, cs_server_name):
         data = list()
         data.append(self.coloring_status(cs_server_name))
-        print (tabulate(data, headers=["Name", "URL", "Status", "Version", "Date updated last time", "Certificate expiry date"]))
+        print (tabulate(data, headers=["Name", "URL", "Status", "Version", "Date updated last time", "Certificate expiry date", "Certificate Issuer"]))
     
 
     def show_banner(self):

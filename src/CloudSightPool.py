@@ -104,9 +104,17 @@ class CloudSightPool:
             with context.wrap_socket(sock, server_hostname=hostname) as ssock:
                 # print(ssock.version())
                 expiry_date = json.dumps(ssock.getpeercert()["notAfter"])
-                issuer = json.dumps(ssock.getpeercert()["issuer"])
-                print(ssock.getpeercert())
+                issuer = json.dumps(self.extract_orgnization_name(ssock.getpeercert()["issuer"]))
+                # print(ssock.getpeercert())
         return expiry_date, issuer
+    
+    def extract_orgnization_name(self,issuer_list_info):
+        print(type(issuer_list_info))
+        for obj in issuer_list_info:
+            # print(obj)
+            for smalleronb in obj: 
+                if smalleronb[0] == "organizationName":
+                    return smalleronb[1]
 
     def check_status(self, cs_server):
         ansibleHelper = ConnectionAgent()
