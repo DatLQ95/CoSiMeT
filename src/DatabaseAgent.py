@@ -185,7 +185,7 @@ class DatabaseAgent:
         data = list()
         self.erase_general_info_table()
         for key, value in src.config.general_info.items():
-            if key == "crypto_key":
+            if key == "crypto_key" or key == "salt":
                 continue
             data.append((key, self.fernet.encrypt(value.encode())))
         # Add the hash:

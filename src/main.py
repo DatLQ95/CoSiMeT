@@ -15,6 +15,7 @@ if __name__ == "__main__":
 # Arrow in the text when we adding something.
 # Auto remove the key after the server is added. -> Need to discuss again!
 # Test all the current features : upgrade/ http certificate update. 
+# Develop multiple upgrade servers
 #
 #
 # DevOps: 
@@ -36,7 +37,5 @@ if __name__ == "__main__":
 # add exception handling for every outsider module!
 # Encrypt the info in general_info table!
 # Password with blank info (getpass module)
-# Change the encryption key feature! For now, just 1 key
-# Develop multiple upgrade servers
-# certbot checking in update status / or print the issuer of the certificate!
+# Change the encryption key feature! 
 
