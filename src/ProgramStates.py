@@ -4,7 +4,7 @@ from src.StateMachine.StateMachine import State
 from src.CloudSightServer import CloudSightServer
 import os
 import src.config
-import maskpass
+from getpass import getpass
 
 class OpenMenu(State):
     def __init__(self):
@@ -386,8 +386,8 @@ class LoginState(State):
     def execute(self):
         self.show_banner()
         user_name= input("User name: ")
-        user_password = maskpass.askpass(prompt="Password:", mask="")
-        src.config.general_info['crypto_key'] = maskpass.askpass(prompt="Encryption key:", mask="")
+        user_password = getpass()
+        src.config.general_info['crypto_key'] = getpass(prompt='Encryption key: ')
         if self.program.processor.check_user(user_name, user_password):
             if self.program.processor.check_crypto_key():
                 self.program.processor.update_fernet()
