@@ -205,7 +205,7 @@ class DatabaseAgent:
         myresult = mycursor.fetchall()
         for item in myresult:
             if item[0] in src.config.general_info.keys():
-                src.config.general_info[item[0]] = self.fernet.decrypt(item[1].encode())
+                src.config.general_info[item[0]] = self.fernet.decrypt(item[1].encode()).decode("utf-8")         
 
     def get_key(self):
         # salt = os.urandom(16)

@@ -22,15 +22,6 @@
   become: yes
   when: ls_output.stdout.find('cloudsight-server-install-old') != -1
 
-# Check if the cloudsight-install-version-old is there
-# If yes -> remove it
-- name: Remove the cloudsight-server-install-old file
-  file:
-    state: absent
-    path: /home/{{ ansible_user }}/cloudsight-server-install-old/
-  become: yes
-  when: ls_output.stdout.find('cloudsight-server-install-old') != -1
-
 # Check if cloudsight-install-version is there. 
 # If yes -> rename it to cloudsight-install-version-old
 - name: Rename the cloudsight-server-install 
