@@ -41,3 +41,7 @@ status_state = dict(
     failed = "Failed",
 )
 
+crypto_method = dict(
+    key_file = "key_file",
+    password = "password"
+)

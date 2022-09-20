@@ -83,7 +83,8 @@ class ConnectionAgent:
         '''
         cs_list = list()
         for cs_server in cs_server_list:
-            cs_server.create_key_file_path()
+            if cs_server.get_encryption_method() == src.config.crypto_method['key_file']:
+                cs_server.create_key_file_path()
             self.prepare_host_file(cs_server)
             cs_server = self.output_analyse(cs_server, self.run_ansible(role="connection_check"))
             cs_list.append(cs_server)
@@ -98,7 +99,10 @@ class ConnectionAgent:
         dict_file['all']['hosts'][cs_server.get_name()]['ansible_user'] = cs_server.get_remote_user()
         if cs_server.get_access_port():
             dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
-        dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+        if cs_server.get_encryption_method() == src.config.crypto_method['key_file']:
+            dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+        elif cs_server.get_encryption_method() == src.config.crypto_method['password']:
+            dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_pass'] = cs_server.get_ssh_password()
         print(dict_file)
         
         with open(src.config.ansible_data['inventory_file_path'], 'w') as file:
@@ -114,7 +118,10 @@ class ConnectionAgent:
             dict_file['all']['hosts'][cs_server.get_name()]['ansible_user'] = cs_server.get_remote_user()
             if cs_server.get_access_port():
                 dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
-            dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+            if cs_server.get_encryption_method() == src.config.crypto_method['key_file']:
+                dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+            elif cs_server.get_encryption_method() == src.config.crypto_method['password']:
+                dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_pass'] = cs_server.get_ssh_password()
 
             dict_file['all']['hosts'][cs_server.get_name()]['license_server_address'] = src.config.general_info['license_server_address']
             dict_file['all']['hosts'][cs_server.get_name()]['license_server_IP_addr'] = src.config.general_info['license_server_IP_addr']
@@ -136,7 +143,10 @@ class ConnectionAgent:
             dict_file['all']['hosts'][cs_server.get_name()]['ansible_user'] = cs_server.get_remote_user()
             if cs_server.get_access_port():
                 dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
-            dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+            if cs_server.get_encryption_method() == src.config.crypto_method['key_file']:
+                dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+            elif cs_server.get_encryption_method() == src.config.crypto_method['password']:
+                dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_pass'] = cs_server.get_ssh_password()
 
             dict_file['all']['hosts'][cs_server.get_name()]['cloudsight_server_install_url'] = src.config.general_info['cloudsight_server_install_url']
             dict_file['all']['hosts'][cs_server.get_name()]['inteno_user'] = src.config.general_info['inteno_user']
@@ -159,7 +169,10 @@ class ConnectionAgent:
             dict_file['all']['hosts'][cs_server.get_name()]['ansible_user'] = cs_server.get_remote_user()
             if cs_server.get_access_port():
                 dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
-            dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+            if cs_server.get_encryption_method() == src.config.crypto_method['key_file']:
+                dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+            elif cs_server.get_encryption_method() == src.config.crypto_method['password']:
+                dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_pass'] = cs_server.get_ssh_password()
             dict_file['all']['hosts'][cs_server.get_name()]['cloudsight_version'] = cs_server.get_version()
             dict_file['all']['hosts'][cs_server.get_name()]['key_file_path'] = path
             dict_file['all']['hosts'][cs_server.get_name()]['time_str'] = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")

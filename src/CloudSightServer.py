@@ -11,7 +11,9 @@ class CloudSightServer:
                 version = src.config.cs_server_info['default_version'], \
                 last_time_update_info = src.config.cs_server_info['default_date'], \
                 certi_expiry_date = src.config.cs_server_info['default_expiry_date'], \
-                certi_issuer = None):
+                certi_issuer = None,
+                crypto_method = None, 
+                ssh_password = None):
         self._name = name
         self._url = url
         self._key = key
@@ -23,6 +25,8 @@ class CloudSightServer:
         self.last_time_update_info = last_time_update_info
         self.certi_expiry_date =  certi_expiry_date
         self.certi_issuer = certi_issuer
+        self.crypto_method = crypto_method
+        self.ssh_password = ssh_password
 
     def get_access_port(self):
         return self._access_port
@@ -61,10 +65,10 @@ class CloudSightServer:
         return [self._name, self._url, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self.certi_issuer]
 
     def get_tuple_data(self):
-        return (self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self._access_port, self.certi_issuer)
+        return (self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self._access_port, self.certi_issuer, self.crypto_method, self.ssh_password)
     
     def get_list_data(self):
-        return [self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self._access_port, self.certi_issuer]
+        return [self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self._access_port, self.certi_issuer, self.crypto_method, self.ssh_password]
     
     
     def get_key(self):
@@ -149,3 +153,8 @@ class CloudSightServer:
         else:
             print("File does not exist")
     
+    def get_encryption_method(self):
+        return self.crypto_method
+    
+    def get_ssh_password(self):
+        return self.ssh_password

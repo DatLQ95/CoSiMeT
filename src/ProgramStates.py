@@ -14,7 +14,7 @@ class OpenMenu(State):
         self.program.setProgramState(SelectServers())
     
     def go_to_add_server(self):
-        self.program.setProgramState(AddServer())
+        self.program.setProgramState(ChooseCryptoMethod())
     
     def go_to_remove_server(self):
         self.program.setProgramState(RemoveServer())
@@ -54,6 +54,7 @@ class OpenMenu(State):
             if os.path.isfile(file):
                 print('Deleting file:', file)
                 os.remove(file)
+        os.remove(os.getcwd() + "/ansible/hosts.yaml")
 
     def show_all_servers(self):
         self.program.GUIhelper.list_servers(self.program.processor.get_all_cloudsight_server())
@@ -96,7 +97,7 @@ class SelectServers(State):
     def show_banner(self):
         self.program.GUIhelper.show_banner()
 
-class AddServer(State):
+class AddServerKey():
     
     def __init__(self):
         super().__init__()
@@ -112,8 +113,9 @@ class AddServer(State):
         server_key_file = input("Path to key file: ")
         server_remote_user = input("Remote user: ")
         self.check_input_requirements()
-        cs_server = CloudSightServer(name=server_name, url=server_url, key_file_path=server_key_file,remote_user=server_remote_user, access_port=server_access_port)
+        cs_server = CloudSightServer(name=server_name, url=server_url, key_file_path=server_key_file,remote_user=server_remote_user, access_port=server_access_port, crypto_method=src.config.crypto_method['key_file'])
         cs_server.extract_key()
+        # TODO: Check if the file exist, check if the input correct!
         if self.program.processor.check_in_cs_server_list(server_name):
             self.program.GUIhelper.add_server_fault_notice()
         else:
@@ -125,6 +127,76 @@ class AddServer(State):
 
     def show_banner(self):
         self.program.GUIhelper.show_banner()
+
+class AddServerPassword():
+    
+    def __init__(self):
+        super().__init__()
+
+    def go_to_open_menu(self):
+        self.program.setProgramState(OpenMenu())
+
+    def execute(self):
+        self.show_banner()
+        server_name= input("Server name: ")
+        server_url = input("Server URL: ")
+        server_access_port = input("Server access port: ")
+        ssh_password = input("SSH Password: ")
+        server_remote_user = input("Remote user: ")
+        self.check_input_requirements()
+        cs_server = CloudSightServer(name=server_name, url=server_url, ssh_password=ssh_password,remote_user=server_remote_user, access_port=server_access_port, crypto_method=src.config.crypto_method['password'])
+        if self.program.processor.check_in_cs_server_list(server_name):
+            self.program.GUIhelper.add_server_fault_notice()
+        else:
+            self.program.processor.add_server(cs_server)
+        self.go_to_open_menu()
+
+    def check_input_requirements(self):
+        pass
+
+    def show_banner(self):
+        self.program.GUIhelper.show_banner()
+
+class ChooseCryptoMethod():
+    
+    def __init__(self):
+        super().__init__()
+    
+    def go_to_add_server_ssh_key(self):
+        self.program.setProgramState(AddServerKey())
+    
+    def go_to_add_server_ssh_password(self):
+        self.program.setProgramState(AddServerPassword())
+
+    def execute(self):
+        self.show_banner()
+        self.show_options()
+        action = input("Your input (Please fill in the number, ex.: 1): ")
+        if (action == "1"):
+            self.go_to_add_server_ssh_key()
+        elif (action == "2"):
+            self.go_to_add_server_ssh_password()
+        else:
+            pass
+
+    def show_server(self):
+        self.program.GUIhelper.show_server(self.program.processor.get_cloudsight_server(self.cs_server))
+
+    def show_options(self):
+        self.program.GUIhelper.show_options_choose_crypto_method()
+    
+    def show_banner(self):
+        self.program.GUIhelper.show_banner()
+
+    def remove_key_files(self):
+        tmp_path = path = os.getcwd() + "/tmp/"
+        for file_name in os.listdir(tmp_path):
+            # construct full file path
+            file = path + file_name
+            if os.path.isfile(file):
+                print('Deleting file:', file)
+                os.remove(file)
+        os.remove(os.getcwd() + "/ansible/hosts.yaml")
 
 class RemoveServer(State):
     #TODO: maybe asking if the user really sure to delete this ?
@@ -233,6 +305,7 @@ class ServerMenu(State):
             if os.path.isfile(file):
                 print('Deleting file:', file)
                 os.remove(file)
+        os.remove(os.getcwd() + "/ansible/hosts.yaml")
 
 class ServerMenuFail(State):
     

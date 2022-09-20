@@ -98,3 +98,10 @@ class GUIHelper:
         print("Please chose the following options:")
         print("1. Go back")
         print("2. Update status")
+
+    def show_options_choose_crypto_method(self):
+        print("----------------------------------------------------")
+        print("Please chose the following options:")
+        print("1. Permission Key File")
+        print("2. Username and password")
+        
