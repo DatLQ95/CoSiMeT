@@ -83,7 +83,7 @@ class DatabaseAgent:
         cs_server_list = list()
         for x in myresult:
             if bool(x[2]):
-                cs_server = CloudSightServer(name=x[0], url=x[1], key=self.fernet.decrypt(x[2].encode()),  remote_user=x[3], status=x[4], version=x[5], last_time_update_info=x[6], certi_expiry_date= x[7], access_port= x[8], certi_issuer=x[9], crypto_method=x[10], ssh_password=x[11])
+                cs_server = CloudSightServer(name=x[0], url=x[1], key=self.fernet.decrypt(x[2]),  remote_user=x[3], status=x[4], version=x[5], last_time_update_info=x[6], certi_expiry_date= x[7], access_port= x[8], certi_issuer=x[9], crypto_method=x[10], ssh_password=x[11])
             elif bool(x[11]):
                 cs_server = CloudSightServer(name=x[0], url=x[1], key=x[2], remote_user=x[3], status=x[4], version=x[5], last_time_update_info=x[6], certi_expiry_date= x[7], access_port= x[8], certi_issuer=x[9], crypto_method=x[10], ssh_password=self.fernet.decrypt(x[11].encode()).decode("utf-8"))
             else: 
@@ -174,7 +174,7 @@ class DatabaseAgent:
         
     def create_table(self, table_name):
         mycursor = self.mydb.cursor()
-        mycursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (name VARCHAR(50), url VARCHAR(255), server_ssh_key VARCHAR(1024), remote_use VARCHAR(50), status VARCHAR(50), version VARCHAR(10), date VARCHAR(50), expiry_date VARCHAR(50), port VARCHAR(50), certi_issuer VARCHAR(50), crypto_method VARCHAR(50), ssh_password VARCHAR(255), PRIMARY KEY(name))")
+        mycursor.execute(f"CREATE TABLE IF NOT EXISTS {table_name} (name VARCHAR(50), url VARCHAR(255), server_ssh_key BLOB, remote_use VARCHAR(50), status VARCHAR(50), version VARCHAR(10), date VARCHAR(50), expiry_date VARCHAR(50), port VARCHAR(50), certi_issuer VARCHAR(50), crypto_method VARCHAR(50), ssh_password VARCHAR(255), PRIMARY KEY(name))")
 
     def erase_general_info_table(self):
         mycursor = self.mydb.cursor()

@@ -54,7 +54,8 @@ class OpenMenu(State):
             if os.path.isfile(file):
                 print('Deleting file:', file)
                 os.remove(file)
-        os.remove(os.getcwd() + "/ansible/hosts.yaml")
+        with open(os.getcwd() + "/ansible/hosts.yaml", "r+") as f:
+            f.truncate(0)
 
     def show_all_servers(self):
         self.program.GUIhelper.list_servers(self.program.processor.get_all_cloudsight_server())
@@ -196,7 +197,8 @@ class ChooseCryptoMethod():
             if os.path.isfile(file):
                 print('Deleting file:', file)
                 os.remove(file)
-        os.remove(os.getcwd() + "/ansible/hosts.yaml")
+        with open(os.getcwd() + "/ansible/hosts.yaml", "r+") as f:
+            f.truncate(0)
 
 class RemoveServer(State):
     #TODO: maybe asking if the user really sure to delete this ?
@@ -305,7 +307,8 @@ class ServerMenu(State):
             if os.path.isfile(file):
                 print('Deleting file:', file)
                 os.remove(file)
-        os.remove(os.getcwd() + "/ansible/hosts.yaml")
+        with open(os.getcwd() + "/ansible/hosts.yaml", "r+") as f:
+            f.truncate(0)
 
 class ServerMenuFail(State):
     

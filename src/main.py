@@ -13,11 +13,9 @@ if __name__ == "__main__":
 # TODO: 
 # Dev job: 
 # Arrow in the text when we adding something.
-# Add new feature: new method for authentication. 
 # Auto remove the key after the server is added. -> Need to discuss again!
 # Test all the current features : upgrade/ http certificate update. 
-# Develop multiple upgrade servers
-# 
+# Develop http certificate and upgrade new version at the same time!
 # 
 # DevOps: 
 # Write the doc how to use the program.
@@ -35,14 +33,8 @@ if __name__ == "__main__":
 # TODO: Security:
 # Security for the DB best practice.
 # add exception handling for every outsider module!
-# Encrypt the info in general_info table!
-# Password with blank info (getpass module)
 # Change the encryption key feature! 
 # 
 #  
 # keyclack
 # For upgrade: check the old values of the installation, keycloack and check if the values is existed? If not, 
-# 
-# 
-# 
-# 
