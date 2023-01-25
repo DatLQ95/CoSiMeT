@@ -5,15 +5,14 @@ import src.config
 from stat import *
 
 
-
 class CloudSightServer:
-    def __init__(self, name, url, remote_user, access_port, key_file_path=None, key = None, status= src.config.cs_server_info['default_status'], \
-                version = src.config.cs_server_info['default_version'], \
-                last_time_update_info = src.config.cs_server_info['default_date'], \
-                certi_expiry_date = src.config.cs_server_info['default_expiry_date'], \
-                certi_issuer = None,
-                crypto_method = None, 
-                ssh_password = None):
+    def __init__(self, name, url, remote_user, access_port, key_file_path=None, key=None, status=src.config.cs_server_info['default_status'],
+                 version=src.config.cs_server_info['default_version'],
+                 last_time_update_info=src.config.cs_server_info['default_date'],
+                 certi_expiry_date=src.config.cs_server_info['default_expiry_date'],
+                 certi_issuer=None,
+                 crypto_method=None,
+                 ssh_password=None):
         self._name = name
         self._url = url
         self._key = key
@@ -21,9 +20,9 @@ class CloudSightServer:
         self.key_file_path = key_file_path
         self.status = status
         self.version = version
-        self._remote_user= remote_user
+        self._remote_user = remote_user
         self.last_time_update_info = last_time_update_info
-        self.certi_expiry_date =  certi_expiry_date
+        self.certi_expiry_date = certi_expiry_date
         self.certi_issuer = certi_issuer
         self.crypto_method = crypto_method
         self.ssh_password = ssh_password
@@ -33,7 +32,7 @@ class CloudSightServer:
 
     def get_status(self):
         return self.status
-    
+
     def set_status(self, status):
         self.status = status
 
@@ -60,32 +59,33 @@ class CloudSightServer:
 
     def print_info(self):
         print(self._name, self._url, self.status, self.version)
-    
+
     def get_data(self):
-        return [self._name, self._url, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self.certi_issuer]
+        return [self._name, self._url, self.status, self.version,
+                self.last_time_update_info, self.certi_expiry_date, self.certi_issuer]
 
     def get_tuple_data(self):
-        return (self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self._access_port, self.certi_issuer, self.crypto_method, self.ssh_password)
-    
+        return (self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info,
+                self.certi_expiry_date, self._access_port, self.certi_issuer, self.crypto_method, self.ssh_password)
+
     def get_list_data(self):
-        return [self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info, self.certi_expiry_date, self._access_port, self.certi_issuer, self.crypto_method, self.ssh_password]
-    
-    
+        return [self._name, self._url, self._key, self._remote_user, self.status, self.version, self.last_time_update_info,
+                self.certi_expiry_date, self._access_port, self.certi_issuer, self.crypto_method, self.ssh_password]
+
     def get_key(self):
         return self._key
-    
+
     def get_last_time_update_info(self):
         return self.last_time_update_info
-    
+
     def get_certi_expiry_date(self):
         return self.certi_expiry_date
-    
+
     def get_certi_issuer(self):
         return self.certi_issuer
-    
+
     def get_access_port(self):
         return self._access_port
-    
 
     def create_result_file(self, host):
         path = os.getcwd() + '/result/' + host
@@ -100,8 +100,9 @@ class CloudSightServer:
                 os.makedirs(path, 0x777)
             finally:
                 os.umask(original_umask)
-        
-        file_path = path + "/" + host + "_" + datetime.now().strftime("%d_%m_%Y_%H_%M_%S") + ".json"
+
+        file_path = path + "/" + host + "_" + \
+            datetime.now().strftime("%d_%m_%Y_%H_%M_%S") + ".json"
         return file_path
 
     def set_last_update_time(self):
@@ -109,23 +110,23 @@ class CloudSightServer:
 
     def set_certi_expiry_date(self, certi_expiry_date):
         self.certi_expiry_date = certi_expiry_date
-    
+
     def set_certi_issuer(self, certi_issuer):
         self.certi_issuer = certi_issuer
-    
+
     def extract_key(self):
         # Convert digital data to binary format
-        
+
         if os.path.isfile(self.key_file_path):
             with open(self.key_file_path, 'rb') as file:
                 self._key = file.read()
                 print(self._key)
-    
+
     def create_key_file_path(self):
         path = os.getcwd() + "/tmp/"
         # Form: name_key
         isExist = os.path.exists(path)
-        
+
         if not isExist:
             # Create a new directory because it does not exist
             os.makedirs(path, 0x777)
@@ -142,19 +143,19 @@ class CloudSightServer:
                 file.write(self._key)
             os.chmod(self.key_file_path, stat.S_IRUSR | stat.S_IWUSR)
             print(self.key_file_path)
-    
+
     def get_key_file_path(self):
         return self.key_file_path
-    
+
     def remove_key_file(self):
         if os.path.isfile(self.key_file_path):
             os.remove(self.key_file_path)
             print("File has been deleted")
         else:
             print("File does not exist")
-    
+
     def get_encryption_method(self):
         return self.crypto_method
-    
+
     def get_ssh_password(self):
         return self.ssh_password

@@ -17,3 +17,5 @@ main.spec
 tmp/
 tmp/
 *.pyc
+.coverage
+certificates/*

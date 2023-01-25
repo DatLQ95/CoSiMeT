@@ -9,6 +9,7 @@ import os
 from datetime import datetime
 import sys
 
+
 class ConnectionAgent:
     def __init__(self):
         pass
@@ -23,12 +24,14 @@ class ConnectionAgent:
         self.do_connection_check(cs_server_list=cs_server_list)
         avail_hosts = self.filter_unreachable_hosts(cs_server_list)
         print(avail_hosts)
-        
-        # if avail_hosts is empty: 
+
+        # if avail_hosts is empty:
         if avail_hosts:
             print("the avail host is not empty")
             self.prepare_cs_server_list_file_for_upgrade(version, avail_hosts)
-            self.sanity_output_processing(avail_hosts, self.run_ansible(role="upgrade"))
+            self.sanity_output_processing(
+                avail_hosts, self.run_ansible(
+                    role="upgrade"))
         return cs_server_list
 
     def do_sanity_check(self, cs_server_list):
@@ -41,12 +44,14 @@ class ConnectionAgent:
         self.do_connection_check(cs_server_list=cs_server_list)
         avail_hosts = self.filter_unreachable_hosts(cs_server_list)
         print(avail_hosts)
-        
-        # if avail_hosts is empty: 
+
+        # if avail_hosts is empty:
         if avail_hosts:
             print("the avail host is not empty")
             self.prepare_cs_server_list_file_for_sanity_check(avail_hosts)
-            self.sanity_output_processing(avail_hosts, self.run_ansible(role="sanity_check"))
+            self.sanity_output_processing(
+                avail_hosts, self.run_ansible(
+                    role="sanity_check"))
         return cs_server_list
 
     def do_update_http_certificate(self, cs_server_list, path):
@@ -56,12 +61,15 @@ class ConnectionAgent:
         self.do_connection_check(cs_server_list=cs_server_list)
         avail_hosts = self.filter_unreachable_hosts(cs_server_list)
         print(avail_hosts)
-        
-        # if avail_hosts is empty: 
+
+        # if avail_hosts is empty:
         if avail_hosts:
             print("the avail host is not empty")
-            self.prepare_cs_server_list_file_for_certificate_renewal(path, cs_server_list)
-            self.sanity_output_processing(cs_server_list, self.run_ansible(role="renewal_certificate"))
+            self.prepare_cs_server_list_file_for_certificate_renewal(
+                path, cs_server_list)
+            self.sanity_output_processing(
+                cs_server_list, self.run_ansible(
+                    role="renewal_certificate"))
         return cs_server_list
 
     def filter_unreachable_hosts(self, hostlist):
@@ -83,10 +91,13 @@ class ConnectionAgent:
         '''
         cs_list = list()
         for cs_server in cs_server_list:
-            if cs_server.get_encryption_method() == src.config.crypto_method['key_file']:
+            if cs_server.get_encryption_method(
+            ) == src.config.crypto_method['key_file']:
                 cs_server.create_key_file_path()
             self.prepare_host_file(cs_server)
-            cs_server = self.output_analyse(cs_server, self.run_ansible(role="connection_check"))
+            cs_server = self.output_analyse(
+                cs_server, self.run_ansible(
+                    role="connection_check"))
             cs_list.append(cs_server)
         return cs_list
 
@@ -95,16 +106,22 @@ class ConnectionAgent:
         dict_file['all'] = dict()
         dict_file['all']['hosts'] = dict()
         dict_file['all']['hosts'][cs_server.get_name()] = dict()
-        dict_file['all']['hosts'][cs_server.get_name()]['ansible_host'] = cs_server.get_url()
-        dict_file['all']['hosts'][cs_server.get_name()]['ansible_user'] = cs_server.get_remote_user()
+        dict_file['all']['hosts'][cs_server.get_name(
+        )]['ansible_host'] = cs_server.get_url()
+        dict_file['all']['hosts'][cs_server.get_name(
+        )]['ansible_user'] = cs_server.get_remote_user()
         if cs_server.get_access_port():
-            dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
-        if cs_server.get_encryption_method() == src.config.crypto_method['key_file']:
-            dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['ansible_port'] = cs_server.get_access_port()
+        if cs_server.get_encryption_method(
+        ) == src.config.crypto_method['key_file']:
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
         elif cs_server.get_encryption_method() == src.config.crypto_method['password']:
-            dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_pass'] = cs_server.get_ssh_password()
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['ansible_ssh_pass'] = cs_server.get_ssh_password()
         print(dict_file)
-        
+
         with open(src.config.ansible_data['inventory_file_path'], 'w') as file:
             yaml.dump(dict_file, file)
 
@@ -114,72 +131,100 @@ class ConnectionAgent:
         dict_file['all']['hosts'] = dict()
         for cs_server in cs_server_list:
             dict_file['all']['hosts'][cs_server.get_name()] = dict()
-            dict_file['all']['hosts'][cs_server.get_name()]['ansible_host'] = cs_server.get_url()
-            dict_file['all']['hosts'][cs_server.get_name()]['ansible_user'] = cs_server.get_remote_user()
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['ansible_host'] = cs_server.get_url()
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['ansible_user'] = cs_server.get_remote_user()
             if cs_server.get_access_port():
-                dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
-            if cs_server.get_encryption_method() == src.config.crypto_method['key_file']:
-                dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+                dict_file['all']['hosts'][cs_server.get_name(
+                )]['ansible_port'] = cs_server.get_access_port()
+            if cs_server.get_encryption_method(
+            ) == src.config.crypto_method['key_file']:
+                dict_file['all']['hosts'][cs_server.get_name(
+                )]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
             elif cs_server.get_encryption_method() == src.config.crypto_method['password']:
-                dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_pass'] = cs_server.get_ssh_password()
+                dict_file['all']['hosts'][cs_server.get_name(
+                )]['ansible_ssh_pass'] = cs_server.get_ssh_password()
 
-            dict_file['all']['hosts'][cs_server.get_name()]['license_server_address'] = src.config.general_info['license_server_address']
-            dict_file['all']['hosts'][cs_server.get_name()]['license_server_IP_addr'] = src.config.general_info['license_server_IP_addr']
-            dict_file['all']['hosts'][cs_server.get_name()]['license_server_port'] = src.config.general_info['license_server_port']
-            dict_file['all']['hosts'][cs_server.get_name()]['domain'] = cs_server.get_url()
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['license_server_address'] = src.config.general_info['license_server_address']
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['license_server_IP_addr'] = src.config.general_info['license_server_IP_addr']
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['license_server_port'] = src.config.general_info['license_server_port']
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['domain'] = cs_server.get_url()
 
         print(dict_file)
-        
+
         with open(src.config.ansible_data['inventory_file_path'], 'w') as file:
             yaml.dump(dict_file, file)
-    
+
     def prepare_cs_server_list_file_for_upgrade(self, version, cs_server_list):
         dict_file = dict()
         dict_file['all'] = dict()
         dict_file['all']['hosts'] = dict()
         for cs_server in cs_server_list:
             dict_file['all']['hosts'][cs_server.get_name()] = dict()
-            dict_file['all']['hosts'][cs_server.get_name()]['ansible_host'] = cs_server.get_url()
-            dict_file['all']['hosts'][cs_server.get_name()]['ansible_user'] = cs_server.get_remote_user()
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['ansible_host'] = cs_server.get_url()
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['ansible_user'] = cs_server.get_remote_user()
             if cs_server.get_access_port():
-                dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
-            if cs_server.get_encryption_method() == src.config.crypto_method['key_file']:
-                dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+                dict_file['all']['hosts'][cs_server.get_name(
+                )]['ansible_port'] = cs_server.get_access_port()
+            if cs_server.get_encryption_method(
+            ) == src.config.crypto_method['key_file']:
+                dict_file['all']['hosts'][cs_server.get_name(
+                )]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
             elif cs_server.get_encryption_method() == src.config.crypto_method['password']:
-                dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_pass'] = cs_server.get_ssh_password()
+                dict_file['all']['hosts'][cs_server.get_name(
+                )]['ansible_ssh_pass'] = cs_server.get_ssh_password()
 
-            dict_file['all']['hosts'][cs_server.get_name()]['cloudsight_server_install_url'] = src.config.general_info['cloudsight_server_install_url']
-            dict_file['all']['hosts'][cs_server.get_name()]['inteno_user'] = src.config.general_info['inteno_user']
-            dict_file['all']['hosts'][cs_server.get_name()]['inteno_password'] = src.config.general_info['inteno_password']
-            dict_file['all']['hosts'][cs_server.get_name()]['cloudsight_version'] = version
-
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['cloudsight_server_install_url'] = src.config.general_info['cloudsight_server_install_url']
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['inteno_user'] = src.config.general_info['inteno_user']
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['inteno_password'] = src.config.general_info['inteno_password']
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['cloudsight_version'] = version
 
         print(dict_file)
-        
+
         with open(src.config.ansible_data['inventory_file_path'], 'w') as file:
             yaml.dump(dict_file, file)
 
-    def prepare_cs_server_list_file_for_certificate_renewal(self, path, cs_server_list):
+    def prepare_cs_server_list_file_for_certificate_renewal(
+            self, path, cs_server_list):
         dict_file = dict()
         dict_file['all'] = dict()
         dict_file['all']['hosts'] = dict()
         for cs_server in cs_server_list:
             dict_file['all']['hosts'][cs_server.get_name()] = dict()
-            dict_file['all']['hosts'][cs_server.get_name()]['ansible_host'] = cs_server.get_url()
-            dict_file['all']['hosts'][cs_server.get_name()]['ansible_user'] = cs_server.get_remote_user()
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['ansible_host'] = cs_server.get_url()
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['ansible_user'] = cs_server.get_remote_user()
             if cs_server.get_access_port():
-                dict_file['all']['hosts'][cs_server.get_name()]['ansible_port'] = cs_server.get_access_port()
-            if cs_server.get_encryption_method() == src.config.crypto_method['key_file']:
-                dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
+                dict_file['all']['hosts'][cs_server.get_name(
+                )]['ansible_port'] = cs_server.get_access_port()
+            if cs_server.get_encryption_method(
+            ) == src.config.crypto_method['key_file']:
+                dict_file['all']['hosts'][cs_server.get_name(
+                )]['ansible_ssh_private_key_file'] = cs_server.get_key_file_path()
             elif cs_server.get_encryption_method() == src.config.crypto_method['password']:
-                dict_file['all']['hosts'][cs_server.get_name()]['ansible_ssh_pass'] = cs_server.get_ssh_password()
-            dict_file['all']['hosts'][cs_server.get_name()]['cloudsight_version'] = cs_server.get_version()
-            dict_file['all']['hosts'][cs_server.get_name()]['key_file_path'] = path
-            dict_file['all']['hosts'][cs_server.get_name()]['time_str'] = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
-            
+                dict_file['all']['hosts'][cs_server.get_name(
+                )]['ansible_ssh_pass'] = cs_server.get_ssh_password()
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['cloudsight_version'] = cs_server.get_version()
+            dict_file['all']['hosts'][cs_server.get_name()
+                                      ]['key_file_path'] = path
+            dict_file['all']['hosts'][cs_server.get_name(
+            )]['time_str'] = datetime.now().strftime("%d_%m_%Y_%H_%M_%S")
 
         print(dict_file)
-        
+
         with open(src.config.ansible_data['inventory_file_path'], 'w') as file:
             yaml.dump(dict_file, file)
 
@@ -191,18 +236,16 @@ class ConnectionAgent:
 
             print(cs_server_lists)
 
-    
-
     def run_ansible(self, role):
         output_text = str()
         with subprocess.Popen(['ansible-playbook', '-i', src.config.ansible_data['inventory_file_path'], src.config.ansible_data['main_file_path'], '--tags', role], stdout=subprocess.PIPE, bufsize=1, universal_newlines=True) as p:
             for line in p.stdout:
-                print(line, end='') # process line here
+                print(line, end='')  # process line here
                 output_text += line
             # raise ProcessException(command, exitCode, output)
         print("output is ", output_text)
         return output_text
-        
+
     def result_file_analyse(self, cs_server):
         '''
         Analyse the output and  update the properties
@@ -213,7 +256,7 @@ class ConnectionAgent:
             cs_server.set_version()
             cs_server.set_expiry_date_certificate()
         return cs_server
-    
+
     def output_analyse(self, cs_server, output):
         '''
         Analyse the output of checking connection:
@@ -224,22 +267,23 @@ class ConnectionAgent:
         # Check if the server is reachable:
         result = out.find('UNREACHABLE!')
         print(result)
-        if result != -1: 
+        if result != -1:
             cs_server.set_status(src.config.status_state['unreachable'])
 
         result = out.find('ok:')
-        if result != -1: 
+        if result != -1:
             cs_server.set_status(src.config.status_state['available'])
-            
+
         result = out.find('FAILED!')
-        if result != -1: 
+        if result != -1:
             cs_server.set_status(src.config.status_state['failed'])
-        
+
         if cs_server.get_status() == "Available":
             result = out.find('iopsys.server.version')
             print(result)
             if result == -1:
-                print("This string is not exist! Seems like the server not isntall correctly!")
+                print(
+                    "This string is not exist! Seems like the server not isntall correctly!")
             else:
                 start_index = result + 22
                 end_index = start_index + 5
@@ -262,12 +306,13 @@ class ConnectionAgent:
             # Create a new directory because it does not exist
             os.makedirs(path)
         host_name = str()
-        if len(avail_cs_servers) == 1 : 
+        if len(avail_cs_servers) == 1:
             host_name = avail_cs_servers[0].get_name()
-        else :
+        else:
             for cs_server in avail_cs_servers:
                 host_name += cs_server.get_name()
-        
-        file_path = path + host_name + "_" + datetime.now().strftime("%d_%m_%Y_%H_%M_%S") + ".txt"
+
+        file_path = path + host_name + "_" + \
+            datetime.now().strftime("%d_%m_%Y_%H_%M_%S") + ".txt"
         with open(file_path, "w+") as f:
             f.write(out)

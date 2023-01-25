@@ -86,8 +86,7 @@ class State():
     @abstractmethod
     def show_server(self, cs_server):
         pass
-
-
+    
     @abstractmethod
     def show_options(self):
         pass

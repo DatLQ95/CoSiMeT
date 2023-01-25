@@ -10,18 +10,19 @@ from colorama import Style
 import sys
 import src.config
 
+
 class GUIHelper:
     def __init__(self):
         init(autoreset=True)
-        
+
     def remove_server_fault_notice(self):
         print(f"{Fore.CYAN}This server is not in the list")
         input("Press anykey to return: ")
-        
+
     def add_server_fault_notice(self):
         print(f"{Fore.CYAN}This server already exist, can not add new one")
         input("Press anykey to return: ")
-    
+
     def upgrade_server_version_fault_notice(self):
         print(f"{Fore.CYAN}Wrong value or not suitable version, please check again!")
         input("Press anykey to return: ")
@@ -41,16 +42,35 @@ class GUIHelper:
         data = list()
         for cs_server in cs_list:
             data.append(self.coloring_status(cs_server))
-        print (tabulate(data, headers=["Name", "URL", "Status", "Version", "Date updated last time", "Certificate expiry date", "Certificate Issuer"]))
-    
+        print(
+            tabulate(
+                data,
+                headers=[
+                    "Name",
+                    "URL",
+                    "Status",
+                    "Version",
+                    "Date updated last time",
+                    "Certificate expiry date",
+                    "Certificate Issuer"]))
+
     def show_server(self, cs_server_name):
         data = list()
         data.append(self.coloring_status(cs_server_name))
-        print (tabulate(data, headers=["Name", "URL", "Status", "Version", "Date updated last time", "Certificate expiry date", "Certificate Issuer"]))
-    
+        print(
+            tabulate(
+                data,
+                headers=[
+                    "Name",
+                    "URL",
+                    "Status",
+                    "Version",
+                    "Date updated last time",
+                    "Certificate expiry date",
+                    "Certificate Issuer"]))
 
     def show_banner(self):
-        os.system('clear')
+        # os.system('clear')
         print(f"{Fore.CYAN}----------------------------------------------------")
         print(f"{Fore.CYAN}---------CLOUDSIGHT MANAGEMENT TOOL-----------------")
         print(f"{Fore.CYAN}----------------------------------------------------")
@@ -68,7 +88,7 @@ class GUIHelper:
         for data in cs_server.get_data():
             color_data.append(f"{color}{data}")
         return color_data
-        
+
     def show_options_open_menu(self):
         print("----------------------------------------------------")
         print("Please chose the following options")
@@ -77,11 +97,10 @@ class GUIHelper:
         print("3. Remove a server")
         print("4. Update all servers")
         print("5. Exit")
-    
+
     def show_options_menu(self):
         print("----------------------------------------------------")
         print("Please enter a server's name of list of server (separated by a comma): ")
-
 
     def show_options_server_menu(self):
         print("----------------------------------------------------")
@@ -91,7 +110,7 @@ class GUIHelper:
         print("3. Do sanity check and get the report")
         print("4. Connect to the server")
         print("5. Update HTTP certificate")
-        print("6. Upgrade to new version")        
+        print("6. Upgrade to new version")
 
     def show_options_server_menu_fail(self):
         print("----------------------------------------------------")
@@ -104,4 +123,3 @@ class GUIHelper:
         print("Please chose the following options:")
         print("1. Permission Key File")
         print("2. Username and password")
-        

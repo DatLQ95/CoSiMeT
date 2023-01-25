@@ -3,6 +3,7 @@ from src.ProgramStates import *
 from src.GUIHelper import GUIHelper
 from src.CSProcessor import CSProcessor
 
+
 class Program:
 
     def __init__(self):
